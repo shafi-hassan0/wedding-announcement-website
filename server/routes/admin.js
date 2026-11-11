@@ -45,6 +45,19 @@ export function adminData(req) {
   });
 }
 
+/**
+ * POST /api/admin/rsvps/:id — delete an RSVP (a test entry, a duplicate, a mistake).
+ * The guest's guestbook notes go with it, and their browser is no longer recognised.
+ */
+export async function deleteRsvp(req, id) {
+  requireAdmin(req);
+  const body = await readBody(req);
+  if (body.action !== 'delete') throw new HttpError(400, 'Unknown action.');
+  const result = run('DELETE FROM rsvps WHERE id = ?', id);
+  if (result.changes === 0) throw new HttpError(404, 'That RSVP is already gone.');
+  return json({ ok: true });
+}
+
 /** POST /api/admin/notes/:id — approve a note, take it back off the site, or delete it. */
 export async function moderateNote(req, id) {
   requireAdmin(req);

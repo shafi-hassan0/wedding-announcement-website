@@ -19,4 +19,5 @@
 .admin th, .admin td { text-align: left; padding: 12px 16px; border-bottom: 1px solid var(--line); vertical-align: top; }
 .admin th { font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
 .admin td.wrap { white-space: pre-wrap; overflow-wrap: anywhere; }
+.admin .btn-row { min-height: 36px; padding: 0 1rem; font-size: 0.72rem; }
 .empty { color: var(--muted); font-style: italic; }

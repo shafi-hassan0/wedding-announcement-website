@@ -35,6 +35,34 @@ function emptyRow(columns, text) {
   return tr;
 }
 
+/** One line of the RSVP table, ending in a Delete button. */
+function rsvpRow(rsvp) {
+  const tr = row([
+    [rsvp.name], [rsvp.attending ? 'Yes' : 'No'], [rsvp.attending ? String(1 + rsvp.guests) : '-'],
+    [rsvp.contact_raw], [rsvp.dietary || '-', 'wrap'], [rsvp.note || '-', 'wrap'], [when(rsvp.updated_at)],
+  ]);
+
+  const button = el('button', 'btn btn-outline btn-row', 'Delete');
+  button.type = 'button';
+  button.setAttribute('aria-label', `Delete the RSVP from ${rsvp.name}`);
+  button.addEventListener('click', async () => {
+    const sure = confirm(`Delete the RSVP from ${rsvp.name}?\n\nAny guestbook notes they left are deleted too. This cannot be undone.`);
+    if (!sure) return;
+    button.disabled = true;
+    try {
+      await api(`/api/admin/rsvps/${rsvp.id}`, { action: 'delete' });
+    } catch (err) {
+      alert(err.message);
+    }
+    load();
+  });
+
+  const cell = el('td');
+  cell.append(button);
+  tr.append(cell);
+  return tr;
+}
+
 function noteCard(note) {
   const card = el('div', 'card admin-note');
   card.append(el('p', 'note-message', note.message));
@@ -90,12 +118,7 @@ async function load() {
   $('pending').replaceChildren(...(pending.length ? pending.map(noteCard) : [el('p', 'empty', 'Nothing waiting. You are all caught up.')]));
   $('approved').replaceChildren(...(approved.length ? approved.map(noteCard) : [el('p', 'empty', 'No approved notes yet.')]));
 
-  $('rsvps').replaceChildren(...(data.rsvps.length
-    ? data.rsvps.map((r) => row([
-        [r.name], [r.attending ? 'Yes' : 'No'], [r.attending ? String(1 + r.guests) : '-'],
-        [r.contact_raw], [r.dietary || '-', 'wrap'], [r.note || '-', 'wrap'], [when(r.updated_at)],
-      ]))
-    : [emptyRow(7, 'No RSVPs yet.')]));
+  $('rsvps').replaceChildren(...(data.rsvps.length ? data.rsvps.map(rsvpRow) : [emptyRow(8, 'No RSVPs yet.')]));
 
   $('contacts').replaceChildren(...(data.contacts.length
     ? data.contacts.map((c) => row([[c.name], [c.reply_to], [c.message, 'wrap'], [when(c.created_at)]]))

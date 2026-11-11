@@ -9,7 +9,7 @@ import { config } from './config.js';
 import { closeDb } from './db.js';
 import { HttpError, checkSameSite, json } from './lib/http.js';
 import { serveStatic } from './lib/static.js';
-import { adminData, adminLogin, adminLogout, moderateNote } from './routes/admin.js';
+import { adminData, adminLogin, adminLogout, deleteRsvp, moderateNote } from './routes/admin.js';
 import { sendContactMessage } from './routes/contact.js';
 import { addNote, listNotes } from './routes/guestbook.js';
 import { me, signIn, signOut, submitRsvp } from './routes/rsvp.js';
@@ -39,9 +39,11 @@ async function handleApi(req, url) {
   const handler = routes[`${req.method} ${url.pathname}`];
   if (handler) return handler(req);
 
-  // The one route with an id in its path.
+  // The two routes with an id in their path.
   const note = url.pathname.match(/^\/api\/admin\/notes\/(\d+)$/);
   if (note && req.method === 'POST') return moderateNote(req, Number(note[1]));
+  const rsvp = url.pathname.match(/^\/api\/admin\/rsvps\/(\d+)$/);
+  if (rsvp && req.method === 'POST') return deleteRsvp(req, Number(rsvp[1]));
 
   throw new HttpError(404, 'Not found.');
 }
