@@ -1,0 +1,12 @@
+.git
+.github
+.claude
+node_modules
+data
+dist
+photos
+.env
+.env.*
+!.env.example
+*.md
+npm-debug.log

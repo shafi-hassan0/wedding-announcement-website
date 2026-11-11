@@ -1,0 +1,22 @@
+/* Photo frames with the offset gold outline, in portrait, landscape and round versions. */
+
+/* photo frames */
+.frame { margin: 0 auto; position: relative; width: min(100%, 420px); }
+.frame img { width: 100%; object-fit: cover; border-radius: var(--radius); box-shadow: var(--shadow); }
+.frame::before {
+  content: ""; position: absolute; inset: 14px -14px -14px 14px; z-index: 0;
+  border: 1.5px solid var(--gold); border-radius: var(--radius); opacity: 0.6;
+}
+.frame img { position: relative; z-index: 1; }
+.frame-portrait img { aspect-ratio: 4 / 5; object-position: 50% 30%; }
+.frame-landscape { width: min(100%, 520px); }
+.frame-landscape img { aspect-ratio: 4 / 3; }
+.frame-square { width: min(100%, 340px); }
+.frame-square img { aspect-ratio: 1; object-position: 50% 30%; border-radius: 50%; }
+.frame-square::before { border-radius: 50%; inset: -12px; }
+/* The gold outline behind each photo slides out after the photo lands. */
+.frame.reveal::before { opacity: 0; transform: translate(-14px, -14px); transition: opacity 0.8s ease 0.5s, transform 0.8s ease 0.5s; }
+.frame.reveal.is-visible::before { opacity: 0.6; transform: none; }
+.frame-square.reveal::before { transform: scale(0.9); }
+.frame img, .shelter img { transition: transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1); }
+.frame:hover img, .shelter:hover img { transform: scale(1.02); }

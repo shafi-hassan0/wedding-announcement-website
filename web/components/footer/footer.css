@@ -1,0 +1,6 @@
+/* Footer. */
+
+.footer { padding: 56px 0 64px; background: var(--rose-dark); color: #f6e3df; }
+.footer-names { font-family: var(--serif); font-size: 2.4rem; line-height: 1.1; margin: 0 0 0.5rem; color: #fff; }
+.footer-names .amp { color: #e6c3a6; }
+.footer-dates { margin: 0; font-size: 0.82rem; letter-spacing: 0.2em; text-transform: uppercase; }

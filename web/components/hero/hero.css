@@ -1,0 +1,43 @@
+/* Hero: names, date and the arched photo, in a split layout. */
+
+.hero {
+  position: relative; overflow: hidden;
+  padding: clamp(32px, 6vw, 72px) 0 clamp(56px, 8vw, 96px);
+  background:
+    radial-gradient(60rem 30rem at 85% 10%, rgba(233, 201, 198, 0.55), transparent 60%),
+    radial-gradient(40rem 26rem at 0% 100%, rgba(183, 138, 102, 0.16), transparent 60%),
+    var(--bg);
+}
+.hero-grid { display: grid; gap: clamp(28px, 5vw, 64px); align-items: center; }
+.hero-text { text-align: center; animation: rise 0.9s ease-out both; }
+.hero-photo { margin: 0 auto; width: min(78%, 340px); order: -1; position: relative; animation: rise 0.9s ease-out 0.1s both; }
+.hero-photo img {
+  width: 100%; aspect-ratio: 3 / 4; object-fit: cover; object-position: 50% 32%;
+  border-radius: 999px 999px 20px 20px; box-shadow: var(--shadow);
+}
+.hero-photo::before {
+  content: ""; position: absolute; inset: -12px; z-index: -1;
+  border: 1.5px solid var(--gold); border-radius: 999px 999px 28px 28px; opacity: 0.7;
+}
+.names { font-size: clamp(2.7rem, 9vw, 4.6rem); font-weight: 500; line-height: 1.02; letter-spacing: 0.01em; }
+.names span { display: block; }
+.names .amp { font-size: 0.75em; line-height: 1.1; margin: 0.02em 0 0.08em; }
+.hero-headline { font-family: var(--serif); font-style: italic; font-size: clamp(1.7rem, 4.6vw, 2.3rem); color: var(--rose); margin: 1.1rem 0 0.2rem; }
+.hero-date { font-size: 0.85rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); margin: 0; }
+.flourish { display: flex; align-items: center; justify-content: center; gap: 14px; margin: 1.5rem 0; }
+.flourish span { display: block; width: 64px; height: 1px; background: var(--gold); }
+.flourish svg { fill: var(--rose-soft); stroke: var(--rose); stroke-width: 1.5; }
+.hero-lede { font-family: var(--serif); font-size: clamp(1.3rem, 3.4vw, 1.6rem); line-height: 1.4; max-width: 30ch; margin: 0 auto 1.4rem; text-wrap: balance; }
+.hero-when { margin: 0 0 1.8rem; color: var(--muted); font-size: 1rem; }
+.hero-when strong { display: block; color: var(--ink); font-weight: 500; font-size: 1.15rem; letter-spacing: 0.03em; }
+.hero-when > span { display: block; }
+@media (min-width: 860px) {
+  .hero-grid { grid-template-columns: 1.1fr 0.9fr; }
+  .hero-photo { order: 0; width: min(100%, 440px); }
+  /* Beside the photo the names have about half the window, so size them to fit on one line each. */
+  .names { font-size: clamp(2.6rem, 4.7vw, 4.6rem); }
+  .names span { white-space: nowrap; }
+}
+@keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+/* Keeps the names and photo above the drifting hearts (shared/hearts.css). */
+.hero-grid { position: relative; z-index: 1; }

@@ -1,0 +1,52 @@
+<section class="section" id="guestbook">
+  <div class="container">
+    <header class="section-head">
+      <p class="eyebrow">Guestbook</p>
+      <h2>Leave a little love.</h2>
+      <p class="section-intro">A courthouse wedding doesn’t come with a guestbook, so here’s one now. Share a memory, a wish, a piece of marriage advice, or just a few kind words. Shafi and Phoenix will treasure every one.</p>
+    </header>
+
+    <!-- Shown until the guest has RSVP'd or signed in -->
+    <div class="card form-card narrow-card" id="guestbook-locked">
+      <p class="locked-line">The guestbook opens once you’ve RSVP’d.</p>
+      <a class="btn" href="#rsvp">RSVP first</a>
+      <button type="button" class="link-button" id="signin-toggle" aria-expanded="false" aria-controls="signin-form">Already RSVP’d? Sign in to leave a note.</button>
+
+      <form id="signin-form" novalidate hidden>
+        <div class="field">
+          <label for="signin-code">Invite code</label>
+          <input id="signin-code" name="code" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" required>
+        </div>
+        <div class="field">
+          <label for="signin-contact">The phone number or email you RSVP’d with</label>
+          <input id="signin-contact" name="contact" type="text" autocomplete="tel" maxlength="120" required>
+        </div>
+        <p class="form-status" role="alert" hidden></p>
+        <button type="submit" class="btn btn-wide">Find my RSVP</button>
+      </form>
+    </div>
+
+    <!-- Shown once the guest is recognised -->
+    <div id="guestbook-open" hidden>
+      <div class="card form-card narrow-card">
+        <h3 id="guestbook-greeting">Welcome back!</h3>
+        <form id="note-form" novalidate>
+          <div class="field">
+            <label for="note-message">Your message</label>
+            <textarea id="note-message" name="message" rows="5" maxlength="500" required aria-describedby="note-count"></textarea>
+            <p class="help count" id="note-count">0 / 500</p>
+          </div>
+          <p class="form-status" role="alert" hidden></p>
+          <button type="submit" class="btn btn-wide">Sign the guestbook</button>
+        </form>
+        <p class="pending-line" id="note-pending" hidden></p>
+      </div>
+
+      <div class="wall-wrap">
+        <h3 class="wall-title">Notes from the people they love</h3>
+        <p class="wall-empty" id="wall-empty" hidden>No notes yet. Be the first to sign.</p>
+        <div class="wall" id="wall" aria-live="polite"></div>
+      </div>
+    </div>
+  </div>
+</section>

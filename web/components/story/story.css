@@ -1,0 +1,11 @@
+/* Their Story: three chapters, photo on alternating sides. */
+
+/* story chapters */
+.chapter { display: grid; gap: clamp(32px, 6vw, 72px); align-items: center; }
+.chapter + .chapter { margin-top: clamp(64px, 9vw, 110px); }
+.chapter-no { font-family: var(--script); font-size: 1.9rem; line-height: 1; color: var(--gold); margin: 0 0 0.3rem; }
+@media (min-width: 860px) {
+  .chapter { grid-template-columns: 0.85fr 1.15fr; }
+  .chapter-flip { grid-template-columns: 1.15fr 0.85fr; }
+  .chapter-flip .frame { order: 2; }
+}

@@ -1,0 +1,49 @@
+name: wedding-website
+
+# Runs next to the portfolio stack on the same home server. It does not start its
+# own Cloudflare Tunnel: wedding-web joins the portfolio's external network, so the
+# portfolio's existing cloudflared container can route a public hostname to it
+# (http://wedding-web:80).
+#
+# Service names are deliberately prefixed. On a shared Docker network a second
+# service called "backend" or "web" would answer to the same name as the portfolio's.
+
+services:
+  wedding-api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    container_name: wedding-api
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      PORT: 3000
+      DB_PATH: /data/wedding.db
+    volumes:
+      - wedding_data:/data
+    networks:
+      - wedding-net
+    # deliberately no ports: only nginx reaches it, over wedding-net
+
+  wedding-web:
+    build:
+      context: .
+      dockerfile: Dockerfile.web
+    container_name: wedding-web
+    restart: unless-stopped
+    depends_on:
+      - wedding-api
+    networks:
+      - wedding-net
+      - portfolio-net
+    # also no ports: only the tunnel reaches it, over portfolio-net
+
+networks:
+  wedding-net:
+  portfolio-net:
+    external: true
+
+volumes:
+  # RSVPs, guestbook notes and contact messages. Back this up before the party.
+  wedding_data:

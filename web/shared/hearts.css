@@ -1,0 +1,33 @@
+/* Hearts drifting up behind every section. hearts.js adds the layer and sets each heart's position, size and speed. */
+
+.hero, .section { position: relative; }
+/* Keep each section's content above its hearts. */
+.section > .container { position: relative; z-index: 1; }
+
+.hearts {
+  position: absolute; inset: 0; overflow: hidden; pointer-events: none;
+  /* Lets the hearts travel in units of this layer's height (cqh), so they cross the whole section however tall it is. */
+  container-type: size;
+}
+.hearts span {
+  position: absolute; bottom: -48px; left: var(--left);
+  color: var(--rose-soft); opacity: 0;
+  font-size: var(--size); line-height: 1;
+  animation: float-up var(--duration) linear var(--delay) infinite;
+}
+.hearts span:nth-child(3n) { color: #f0d9c8; }
+
+/* On the pink sections the hearts are white. */
+.section-tint .hearts span,
+.section-rose .hearts span { color: #fff; --peak: 0.95; }
+
+/* Hearts in a section that is off screen stand still, to save the device some work. */
+.hearts.is-paused span { animation-play-state: paused; }
+
+@keyframes float-up {
+  0%   { transform: translate(0, 0) rotate(-10deg); opacity: 0; }
+  6%   { opacity: var(--peak, 0.75); }
+  50%  { transform: translate(22px, -52cqh) rotate(10deg); opacity: var(--peak, 0.75); }
+  90%  { opacity: calc(var(--peak, 0.75) * 0.5); }
+  100% { transform: translate(-12px, calc(-100cqh - 60px)) rotate(-8deg); opacity: 0; }
+}

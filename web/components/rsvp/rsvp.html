@@ -1,0 +1,75 @@
+<section class="section section-rose" id="rsvp">
+  <div class="container narrow">
+    <header class="section-head">
+      <p class="eyebrow">RSVP</p>
+      <h2>Say you’ll be there.</h2>
+      <p class="event-line">
+        <strong>Saturday, March 13, 2027</strong>
+        <span>2:00 PM – 6:00 PM <span aria-hidden="true">·</span> Echo Lake Park, Glen Allen</span>
+      </p>
+      <p class="section-intro">It wouldn’t be the same without you. Please let Shafi and Phoenix know if you can make it by <strong>Saturday, February 27, 2027</strong>, so they know how many of their favorite people to expect, and how much to throw on the grill.</p>
+    </header>
+
+    <div class="card form-card">
+      <div id="rsvp-done" class="done" hidden tabindex="-1">
+        <svg class="done-heart" viewBox="0 0 32 32" width="40" height="40" aria-hidden="true"><path d="M16 28S3 20.2 3 11.4C3 7.3 6.2 4 10.2 4c2.4 0 4.5 1.2 5.8 3 1.3-1.8 3.4-3 5.8-3C25.8 4 29 7.3 29 11.4 29 20.2 16 28 16 28z"/></svg>
+        <h3 id="rsvp-done-title"></h3>
+        <p id="rsvp-done-text"></p>
+        <p>Want to leave Shafi and Phoenix a note? <a href="#guestbook">Sign the guestbook below.</a></p>
+        <button type="button" class="link-button" id="rsvp-change">Change my RSVP</button>
+      </div>
+
+      <form id="rsvp-form" novalidate>
+        <div class="field">
+          <label for="rsvp-code">Invite code</label>
+          <input id="rsvp-code" name="code" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" required aria-describedby="rsvp-code-help">
+          <p class="help" id="rsvp-code-help">You’ll find this on your invitation.</p>
+        </div>
+        <div class="field">
+          <label for="rsvp-name">Full name</label>
+          <input id="rsvp-name" name="name" type="text" autocomplete="name" maxlength="80" required>
+        </div>
+        <div class="field">
+          <label for="rsvp-contact">Phone number or email</label>
+          <input id="rsvp-contact" name="contact" type="text" autocomplete="tel" maxlength="120" required aria-describedby="rsvp-contact-help">
+          <p class="help" id="rsvp-contact-help">So Shafi and Phoenix can reach you if plans change, and so you can come back later to leave them a message.</p>
+        </div>
+        <fieldset class="field choice" data-field="attending">
+          <legend>Will you be there?</legend>
+          <label class="choice-option"><input type="radio" name="attending" value="yes" required><span>Wouldn’t miss it</span></label>
+          <label class="choice-option"><input type="radio" name="attending" value="no"><span>Sadly can’t make it</span></label>
+        </fieldset>
+        <div class="field" id="rsvp-guests-field">
+          <label for="rsvp-guests">How many are coming with you? <span class="soft">(kids count!)</span></label>
+          <select id="rsvp-guests" name="guests">
+            <option value="0">Just me</option>
+            <option value="1">1 more</option>
+            <option value="2">2 more</option>
+            <option value="3">3 more</option>
+            <option value="4">4 more</option>
+            <option value="5">5 more</option>
+            <option value="6">6 more</option>
+            <option value="7">7 more</option>
+            <option value="8">8 more</option>
+            <option value="9">9 more</option>
+            <option value="10">10 more</option>
+          </select>
+        </div>
+        <div class="field" id="rsvp-dietary-field">
+          <label for="rsvp-dietary">Dietary needs or allergies <span class="soft">(optional)</span></label>
+          <input id="rsvp-dietary" name="dietary" type="text" maxlength="300">
+        </div>
+        <div class="field">
+          <label for="rsvp-note">A note for Shafi and Phoenix <span class="soft">(optional)</span></label>
+          <textarea id="rsvp-note" name="note" rows="3" maxlength="500"></textarea>
+        </div>
+        <div class="hp" aria-hidden="true">
+          <label for="rsvp-website">Leave this field empty</label>
+          <input id="rsvp-website" name="website" type="text" tabindex="-1" autocomplete="off">
+        </div>
+        <p class="form-status" role="alert" hidden></p>
+        <button type="submit" class="btn btn-wide">Send my RSVP</button>
+      </form>
+    </div>
+  </div>
+</section>

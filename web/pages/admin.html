@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Admin | Shafi &amp; Phoenix</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@400;500;600&family=Pinyon+Script&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+  <script type="module" src="/admin/admin.js"></script>
+</head>
+<body>
+  <main class="admin">
+    <div class="container">
+
+      <div id="login" class="card form-card narrow-card" hidden>
+        <h1>Admin</h1>
+        <p class="help">For Shafi and Phoenix only.</p>
+        <form id="login-form" novalidate>
+          <div class="field">
+            <label for="password">Password</label>
+            <input id="password" name="password" type="password" autocomplete="current-password" required>
+          </div>
+          <p class="form-status" role="alert" hidden></p>
+          <button type="submit" class="btn btn-wide">Sign in</button>
+        </form>
+      </div>
+
+      <div id="dashboard" hidden>
+        <div class="admin-bar">
+          <div>
+            <h1>Celebration admin</h1>
+            <p class="help">RSVPs, guestbook notes and messages. <a href="/">View the site</a></p>
+          </div>
+          <div class="admin-actions">
+            <button type="button" class="btn btn-outline" id="refresh">Refresh</button>
+            <button type="button" class="btn btn-outline" id="logout">Sign out</button>
+          </div>
+        </div>
+
+        <div class="stats" id="stats"></div>
+
+        <h2>Notes waiting for approval</h2>
+        <div id="pending"></div>
+
+        <h2>Approved notes</h2>
+        <div id="approved"></div>
+
+        <h2>RSVPs</h2>
+        <div class="card table-scroll">
+          <table>
+            <thead><tr><th>Name</th><th>Coming?</th><th>Total</th><th>Contact</th><th>Dietary</th><th>Note</th><th>Updated</th></tr></thead>
+            <tbody id="rsvps"></tbody>
+          </table>
+        </div>
+
+        <h2>Messages from the contact form</h2>
+        <div class="card table-scroll">
+          <table>
+            <thead><tr><th>From</th><th>Reply to</th><th>Message</th><th>Sent</th></tr></thead>
+            <tbody id="contacts"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</body>
+</html>

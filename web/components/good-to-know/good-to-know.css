@@ -1,0 +1,7 @@
+/* Good to Know: the grid of question cards. */
+
+.faq { display: grid; gap: 24px; }
+@media (min-width: 760px) { .faq { grid-template-columns: 1fr 1fr; } }
+.faq-item { padding: 28px; }
+.faq-item h3 { font-size: 1.55rem; margin-bottom: 0.6rem; color: var(--rose); }
+.faq-item p { margin: 0; }

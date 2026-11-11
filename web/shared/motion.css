@@ -1,0 +1,29 @@
+/* Scroll animations (see motion.js): reveal-on-scroll, the progress line, and the reduced-motion overrides. */
+
+/* Thin progress line under the top of the window. */
+.scroll-progress {
+  position: fixed; top: 0; left: 0; right: 0; height: 3px; z-index: 60;
+  background: linear-gradient(90deg, var(--gold), var(--rose));
+  transform: scaleX(0); transform-origin: left; pointer-events: none;
+}
+.reveal {
+  opacity: 0; transform: translateY(32px);
+  transition: opacity 0.9s cubic-bezier(0.2, 0.7, 0.2, 1), transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.reveal-left  { transform: translateX(-44px); }
+.reveal-right { transform: translateX(44px); }
+.reveal-zoom  { transform: scale(0.92); }
+/* Blocks that left through the top of the screen come back in from above. */
+.reveal.from-above:not(.reveal-left):not(.reveal-right):not(.reveal-zoom):not(.is-visible) { transform: translateY(-32px); }
+.reveal.is-visible { opacity: 1; transform: none; }
+/* Stagger only on the way in, and only until the block has settled. */
+.reveal-d1.is-visible:not(.settled) { transition-delay: 0.12s; }
+.reveal-d2.is-visible:not(.settled) { transition-delay: 0.24s; }
+.reveal-d3.is-visible:not(.settled) { transition-delay: 0.36s; }
+.reveal-d4.is-visible:not(.settled) { transition-delay: 0.48s; }
+.reveal-d5.is-visible:not(.settled) { transition-delay: 0.6s; }
+@media (prefers-reduced-motion: reduce) {
+  .hearts, .scroll-progress, .burst { display: none; }
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}

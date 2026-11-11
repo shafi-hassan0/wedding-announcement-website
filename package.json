@@ -1,0 +1,14 @@
+{
+  "name": "wedding-announcement-website",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "dev": "node --env-file=.env --disable-warning=ExperimentalWarning scripts/dev.js",
+    "build": "node scripts/build.js",
+    "start": "node --disable-warning=ExperimentalWarning server/index.js"
+  }
+}

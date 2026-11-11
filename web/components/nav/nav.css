@@ -1,0 +1,14 @@
+/* Sticky bar at the top: monogram, section links, RSVP button. */
+
+.nav {
+  position: sticky; top: 0; z-index: 50;
+  background: rgba(251, 245, 239, 0.92); backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line);
+}
+.nav-inner { display: flex; align-items: center; justify-content: space-between; gap: 1rem; min-height: 64px; }
+.monogram { font-family: var(--serif); font-size: 1.5rem; font-weight: 500; color: var(--ink); text-decoration: none; letter-spacing: 0.04em; }
+.monogram .amp { font-size: 1.5rem; padding: 0 0.1em; }
+.nav-links { display: none; gap: 1.6rem; }
+.nav-links a { color: var(--ink); text-decoration: none; font-size: 0.95rem; letter-spacing: 0.04em; padding: 6px 0; }
+.nav-links a:hover { color: var(--rose); }
+@media (min-width: 900px) { .nav-links { display: flex; } }
