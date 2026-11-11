@@ -1,4 +1,4 @@
-/* Sticky bar at the top: monogram, section links, RSVP button. */
+/* Sticky bar at the top: monogram, section links, RSVP button. On phones the links sit in a menu that opens from the three-line button (see nav.js). */
 
 .nav {
   position: sticky; top: 0; z-index: 50;
@@ -8,7 +8,52 @@
 .nav-inner { display: flex; align-items: center; justify-content: space-between; gap: 1rem; min-height: 64px; }
 .monogram { font-family: var(--serif); font-size: 1.5rem; font-weight: 500; color: var(--ink); text-decoration: none; letter-spacing: 0.04em; }
 .monogram .amp { font-size: 1.5rem; padding: 0 0.1em; }
-.nav-links { display: none; gap: 1.6rem; }
-.nav-links a { color: var(--ink); text-decoration: none; font-size: 0.95rem; letter-spacing: 0.04em; padding: 6px 0; }
+.nav-end { display: flex; align-items: center; gap: 0.75rem; }
+
+.nav-links a { color: var(--ink); text-decoration: none; }
 .nav-links a:hover { color: var(--rose); }
-@media (min-width: 900px) { .nav-links { display: flex; } }
+
+/* The three-line menu button, which turns into an X while the menu is open. */
+.nav-toggle {
+  display: inline-flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px;
+  width: 44px; height: 44px; padding: 0;
+  background: transparent; border: 1.5px solid var(--rose-soft); border-radius: 50%; cursor: pointer;
+}
+.nav-toggle span {
+  display: block; width: 18px; height: 1.5px; border-radius: 2px; background: var(--rose);
+  transition: transform 0.3s ease, opacity 0.2s ease;
+}
+.nav.is-open .nav-toggle span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+.nav.is-open .nav-toggle span:nth-child(2) { opacity: 0; }
+.nav.is-open .nav-toggle span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+/* Phones and small tablets: the links are a panel that drops down from the bar. */
+@media (max-width: 899.98px) {
+  .nav-links {
+    position: absolute; top: 100%; left: 0; right: 0;
+    display: flex; flex-direction: column;
+    padding: 6px 20px 14px;
+    background: var(--bg); border-bottom: 1px solid var(--line);
+    box-shadow: 0 24px 40px -28px rgba(90, 40, 50, 0.5);
+    /* Closed: invisible, and out of reach of taps, the keyboard and screen readers. */
+    visibility: hidden; opacity: 0; transform: translateY(-10px);
+    transition: opacity 0.25s ease, transform 0.25s ease, visibility 0s linear 0.25s;
+  }
+  .nav.is-open .nav-links {
+    visibility: visible; opacity: 1; transform: none;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+  }
+  .nav-links a {
+    display: flex; align-items: center; min-height: 52px;
+    font-family: var(--serif); font-size: 1.45rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .nav-links a:last-child { border-bottom: 0; }
+}
+
+/* Wider screens: the links sit in the bar and there is no menu button. */
+@media (min-width: 900px) {
+  .nav-links { display: flex; gap: 1.6rem; }
+  .nav-links a { font-size: 0.95rem; letter-spacing: 0.04em; padding: 6px 0; }
+  .nav-toggle { display: none; }
+}

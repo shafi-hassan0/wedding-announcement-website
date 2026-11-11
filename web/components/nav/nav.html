@@ -1,7 +1,7 @@
 <header class="nav">
   <div class="container nav-inner">
     <a class="monogram" href="#top" aria-label="Shafi and Phoenix, back to top">S <span class="amp">&amp;</span> P</a>
-    <nav class="nav-links" aria-label="Sections">
+    <nav class="nav-links" id="nav-links" aria-label="Sections">
       <a href="#story">Their Story</a>
       <a href="#celebration">The Celebration</a>
       <a href="#food">The Food</a>
@@ -9,6 +9,12 @@
       <a href="#good-to-know">Good to Know</a>
       <a href="#contact">Contact Us</a>
     </nav>
-    <a class="btn btn-small" href="#rsvp">RSVP</a>
+    <div class="nav-end">
+      <a class="btn btn-small" href="#rsvp">RSVP</a>
+      <!-- Phones only. Hidden until nav.js is running, since it does nothing without it. -->
+      <button type="button" class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="nav-links" aria-label="Open menu" hidden>
+        <span></span><span></span><span></span>
+      </button>
+    </div>
   </div>
 </header>
