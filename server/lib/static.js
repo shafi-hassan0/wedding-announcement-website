@@ -11,8 +11,8 @@ const TYPES = {
   '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.png': 'image/png', '.webp': 'image/webp', '.ico': 'image/x-icon',
 };
 
-// Keep in step with the headers in nginx.conf.
-const HEADERS = {
+// Security headers for every page. Keep in step with the headers in nginx.conf.
+export const PAGE_HEADERS = {
   'cache-control': 'no-cache',
   'x-robots-tag': 'noindex, nofollow',
   'x-content-type-options': 'nosniff',
@@ -47,6 +47,6 @@ export function serveStatic(req, res, url) {
       return;
     }
     const type = TYPES[path.extname(file).toLowerCase()] || 'application/octet-stream';
-    res.writeHead(200, { 'content-type': type, ...HEADERS }).end(req.method === 'HEAD' ? undefined : data);
+    res.writeHead(200, { 'content-type': type, ...PAGE_HEADERS }).end(req.method === 'HEAD' ? undefined : data);
   });
 }

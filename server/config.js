@@ -24,8 +24,12 @@ export const config = {
   // The built site. Only used when this server serves the pages itself (local development).
   staticDir: path.join(ROOT, 'dist'),
   dbPath: env.DB_PATH || path.join(ROOT, 'data', 'wedding.db'),
+  // The printable invitation maker, served only to signed-in admins.
+  invitationDir: path.join(ROOT, 'invitation'),
 
+  // Compared without regard to case; printed on invitations exactly as written in .env.
   inviteCode: env.INVITE_CODE.trim().toLowerCase(),
+  inviteCodeAsWritten: env.INVITE_CODE.trim(),
   adminPassword: env.ADMIN_PASSWORD,
   sessionSecret: env.SESSION_SECRET,
 

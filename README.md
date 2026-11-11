@@ -25,6 +25,8 @@ server/                 the backend (plain Node, no npm dependencies)
   db.js                 the SQLite database and its tables
   config.js             settings read from the environment
 
+invitation/             the printable invitation (index.html, invitation.css, invitation.js, qr.svg)
+
 scripts/build.js        assembles web/ into dist/
 scripts/dev.js          local development: build, watch, run the backend
 
@@ -59,6 +61,23 @@ npm run dev
 Then open http://localhost:3000. The site rebuilds whenever a file in `web/` changes; refresh the page to see it. The admin page is at http://localhost:3000/admin, and its password is `ADMIN_PASSWORD` in `.env`.
 
 Local data is kept in `data/wedding.db`. Delete that folder to start fresh.
+
+## Invitations
+
+The `invitation/` folder is a printable invitation in the site's colors and fonts. It is not part of the website and is never deployed.
+
+```bash
+npm run invitation
+```
+
+Then open http://localhost:3100. Opening `invitation/index.html` directly in a browser works too.
+
+1. Type the guest names, one per line. Each line becomes its own invitation ("Dear ..."). Leave the list empty to get one invitation with a blank line to write on.
+2. Type the invite code. It is printed on every invitation, next to a QR code that opens https://shaphoenix.com.
+3. Pick the paper: a 5 × 7 inch card per page, or two per sheet of letter paper with a dashed line to cut along.
+4. Print, or save as PDF to send to a print shop. In the print window, set margins to "None" and turn on "Background graphics".
+
+The names and code you type are remembered in that browser only; they are not saved in this repository. To change the wording, edit the `<template>` in `invitation/index.html`.
 
 ## How guests use it
 

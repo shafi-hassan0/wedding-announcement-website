@@ -6,6 +6,8 @@ ENV NODE_ENV=production \
     DB_PATH=/data/wedding.db
 COPY package.json ./
 COPY server ./server
+# The invitation maker is served by the backend, to signed-in admins only.
+COPY invitation ./invitation
 # The database lives in a volume mounted at /data; make sure the unprivileged user owns it.
 RUN mkdir -p /data && chown node:node /data
 USER node

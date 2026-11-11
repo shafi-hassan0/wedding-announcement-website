@@ -12,6 +12,7 @@ import { serveStatic } from './lib/static.js';
 import { adminData, adminLogin, adminLogout, deleteContactMessage, deleteRsvp, moderateNote } from './routes/admin.js';
 import { sendContactMessage } from './routes/contact.js';
 import { addNote, listNotes } from './routes/guestbook.js';
+import { inviteCode, isInvitationPath, serveInvitations } from './routes/invitations.js';
 import { me, signIn, signOut, submitRsvp } from './routes/rsvp.js';
 
 // Every API endpoint, in one place.
@@ -31,6 +32,7 @@ const routes = {
   'POST /api/admin/login': adminLogin,
   'POST /api/admin/logout': adminLogout,
   'GET /api/admin/data': adminData,
+  'GET /api/admin/invite-code': inviteCode,
 };
 
 async function handleApi(req, url) {
@@ -59,6 +61,8 @@ const server = http.createServer(async (req, res) => {
     res.writeHead(400).end();
     return;
   }
+  // The invitation maker is the one set of pages served from here in production too: admins only.
+  if (isInvitationPath(url.pathname)) return serveInvitations(req, res, url);
   if (!url.pathname.startsWith('/api/')) return serveStatic(req, res, url);
 
   let result;
