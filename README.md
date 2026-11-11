@@ -68,7 +68,7 @@ Local data is kept in `data/wedding.db`. Delete that folder to start fresh.
 
 Sending the RSVP form again with the same phone or email updates that RSVP instead of creating a second one.
 
-On the admin page, each RSVP has a **Delete** button for test entries and mistakes. Deleting an RSVP also deletes that guest's guestbook notes, and their browser is no longer recognised, so they would need to RSVP again.
+On the admin page, each RSVP has a **Delete** button for test entries and mistakes. Deleting an RSVP also deletes that guest's guestbook notes, and their browser is no longer recognised, so they would need to RSVP again. Contact form messages have a **Delete** button too.
 
 ## Settings (`.env`)
 

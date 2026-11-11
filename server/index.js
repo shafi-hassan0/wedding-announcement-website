@@ -9,7 +9,7 @@ import { config } from './config.js';
 import { closeDb } from './db.js';
 import { HttpError, checkSameSite, json } from './lib/http.js';
 import { serveStatic } from './lib/static.js';
-import { adminData, adminLogin, adminLogout, deleteRsvp, moderateNote } from './routes/admin.js';
+import { adminData, adminLogin, adminLogout, deleteContactMessage, deleteRsvp, moderateNote } from './routes/admin.js';
 import { sendContactMessage } from './routes/contact.js';
 import { addNote, listNotes } from './routes/guestbook.js';
 import { me, signIn, signOut, submitRsvp } from './routes/rsvp.js';
@@ -39,11 +39,14 @@ async function handleApi(req, url) {
   const handler = routes[`${req.method} ${url.pathname}`];
   if (handler) return handler(req);
 
-  // The two routes with an id in their path.
-  const note = url.pathname.match(/^\/api\/admin\/notes\/(\d+)$/);
-  if (note && req.method === 'POST') return moderateNote(req, Number(note[1]));
-  const rsvp = url.pathname.match(/^\/api\/admin\/rsvps\/(\d+)$/);
-  if (rsvp && req.method === 'POST') return deleteRsvp(req, Number(rsvp[1]));
+  // The admin routes with an id in their path: /api/admin/<kind>/<id>
+  const item = url.pathname.match(/^\/api\/admin\/(notes|rsvps|contacts)\/(\d+)$/);
+  if (item && req.method === 'POST') {
+    const id = Number(item[2]);
+    if (item[1] === 'notes') return moderateNote(req, id);
+    if (item[1] === 'rsvps') return deleteRsvp(req, id);
+    return deleteContactMessage(req, id);
+  }
 
   throw new HttpError(404, 'Not found.');
 }

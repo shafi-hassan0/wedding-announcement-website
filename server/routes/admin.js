@@ -58,6 +58,16 @@ export async function deleteRsvp(req, id) {
   return json({ ok: true });
 }
 
+/** POST /api/admin/contacts/:id — delete a message that came in through the contact form. */
+export async function deleteContactMessage(req, id) {
+  requireAdmin(req);
+  const body = await readBody(req);
+  if (body.action !== 'delete') throw new HttpError(400, 'Unknown action.');
+  const result = run('DELETE FROM contacts WHERE id = ?', id);
+  if (result.changes === 0) throw new HttpError(404, 'That message is already gone.');
+  return json({ ok: true });
+}
+
 /** POST /api/admin/notes/:id — approve a note, take it back off the site, or delete it. */
 export async function moderateNote(req, id) {
   requireAdmin(req);

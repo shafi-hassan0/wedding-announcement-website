@@ -2,12 +2,18 @@
 //
 //   web/pages/*.html         page shells; each "<!-- @include path -->" line is
 //                            replaced by that file's contents
-//   web/**/*.css             joined into one dist/styles.css, in the order below
+//   web/**/*.css             joined into one styles.css, in the order below
 //   web/**/*.js              copied as they are (the browser loads them as ES modules)
 //   web/static/**            copied to the top of dist/ (photos, robots.txt)
 //
+// The stylesheet and scripts go in dist/v/<version>/, where <version> is a fingerprint
+// of their contents, and the pages are pointed at that folder. Browsers and Cloudflare
+// keep scripts and styles for hours; a new folder name on every change means a deploy
+// shows up for everyone straight away, and a page never runs against an older script.
+//
 // Run with `npm run build`. `npm run dev` runs it automatically on every change.
 
+import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -68,27 +74,42 @@ export function build() {
   const unlisted = files.filter((f) => f.endsWith('.css') && !STYLES.includes(f));
   if (unlisted.length) throw new Error(`Add these stylesheets to STYLES in scripts/build.js: ${unlisted.join(', ')}`);
 
+  const css = STYLES.map((file) => `/* ${file} */\n${fs.readFileSync(path.join(WEB, file), 'utf8').trim()}\n`).join('\n');
+  const scripts = files.filter((f) => f.endsWith('.js')).sort();
+
+  // Fingerprint of every style and script: changes whenever any of them does.
+  const hash = crypto.createHash('sha256').update(css);
+  for (const file of scripts) hash.update(file).update(fs.readFileSync(path.join(WEB, file)));
+  const version = hash.digest('hex').slice(0, 10);
+  const assets = `/v/${version}`;
+
   fs.rmSync(DIST, { recursive: true, force: true });
-  fs.mkdirSync(DIST, { recursive: true });
+  fs.mkdirSync(path.join(DIST, 'v', version), { recursive: true });
 
-  for (const file of fs.readdirSync(path.join(WEB, 'pages'))) {
-    fs.writeFileSync(path.join(DIST, file), buildPage(file));
-  }
-
-  const css = STYLES.map((file) => `/* ${file} */\n${fs.readFileSync(path.join(WEB, file), 'utf8').trim()}\n`);
-  fs.writeFileSync(path.join(DIST, 'styles.css'), css.join('\n'));
-
-  for (const file of files.filter((f) => f.endsWith('.js'))) {
-    const target = path.join(DIST, file);
+  fs.writeFileSync(path.join(DIST, 'v', version, 'styles.css'), css);
+  for (const file of scripts) {
+    const target = path.join(DIST, 'v', version, file);
     fs.mkdirSync(path.dirname(target), { recursive: true });
     fs.copyFileSync(path.join(WEB, file), target);
   }
 
+  // Pages reference "/styles.css" and "/main.js"; point them at the versioned folder.
+  for (const file of fs.readdirSync(path.join(WEB, 'pages'))) {
+    const page = buildPage(file)
+      .replace(/(<link rel="stylesheet" href=")\/styles\.css"/g, `$1${assets}/styles.css"`)
+      .replace(/(<script type="module" src=")\/([^"]+\.js")/g, `$1${assets}/$2`);
+    if (!page.includes(`${assets}/styles.css`) || !page.includes(`src="${assets}/`)) {
+      throw new Error(`${file}: expected a "/styles.css" link and a module script to version`);
+    }
+    fs.writeFileSync(path.join(DIST, file), page);
+  }
+
   fs.cpSync(path.join(WEB, 'static'), DIST, { recursive: true });
+  return version;
 }
 
 // Run directly: `node scripts/build.js`
 if (import.meta.url === pathToFileURL(process.argv[1]).href) {
-  build();
-  console.log(`Built ${listFiles(DIST).length} files into dist/`);
+  const version = build();
+  console.log(`Built ${listFiles(DIST).length} files into dist/ (scripts and styles in v/${version}/)`);
 }
