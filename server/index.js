@@ -13,6 +13,7 @@ import { adminData, adminLogin, adminLogout, deleteContactMessage, deleteRsvp, m
 import { sendContactMessage } from './routes/contact.js';
 import { addNote, listNotes } from './routes/guestbook.js';
 import { inviteCode, isInvitationPath, serveInvitations } from './routes/invitations.js';
+import { addInvitee, changeInvitee, listInvitees, saveReturnAddress } from './routes/invitees.js';
 import { me, signIn, signOut, submitRsvp } from './routes/rsvp.js';
 
 // Every API endpoint, in one place.
@@ -33,6 +34,18 @@ const routes = {
   'POST /api/admin/logout': adminLogout,
   'GET /api/admin/data': adminData,
   'GET /api/admin/invite-code': inviteCode,
+
+  'GET /api/admin/invitees': listInvitees,
+  'POST /api/admin/invitees': addInvitee,
+  'POST /api/admin/return-address': saveReturnAddress,
+};
+
+// Admin routes that act on one item: POST /api/admin/<kind>/<id>
+const itemRoutes = {
+  notes: moderateNote,
+  rsvps: deleteRsvp,
+  contacts: deleteContactMessage,
+  invitees: changeInvitee,
 };
 
 async function handleApi(req, url) {
@@ -41,13 +54,9 @@ async function handleApi(req, url) {
   const handler = routes[`${req.method} ${url.pathname}`];
   if (handler) return handler(req);
 
-  // The admin routes with an id in their path: /api/admin/<kind>/<id>
-  const item = url.pathname.match(/^\/api\/admin\/(notes|rsvps|contacts)\/(\d+)$/);
-  if (item && req.method === 'POST') {
-    const id = Number(item[2]);
-    if (item[1] === 'notes') return moderateNote(req, id);
-    if (item[1] === 'rsvps') return deleteRsvp(req, id);
-    return deleteContactMessage(req, id);
+  const item = url.pathname.match(/^\/api\/admin\/([a-z]+)\/(\d+)$/);
+  if (item && req.method === 'POST' && Object.hasOwn(itemRoutes, item[1])) {
+    return itemRoutes[item[1]](req, Number(item[2]));
   }
 
   throw new HttpError(404, 'Not found.');

@@ -1,0 +1,135 @@
+/* The invitation maker's own layout: the settings panel, the forms, the guest list,
+   the preview tabs, and what gets printed. The invitation itself is in card.css and
+   the envelope labels are in labels.css. */
+
+:root {
+  --bg: #fbf5ef;
+  --tint: #f6e9e3;
+  --rose: #9c4658;
+  --rose-dark: #7d3345;
+  --rose-soft: #e9c9c6;
+  --gold: #b78a66;
+  --ink: #3a2a2b;
+  --muted: #74605f;
+  --line: #ead9d1;
+  --error: #a3312f;
+  --serif: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+  --sans: "Jost", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --script: "Pinyon Script", "Cormorant Garamond", cursive;
+  --sheet-shadow: 0 18px 40px -20px rgba(90, 40, 50, 0.45);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+[hidden] { display: none !important; }
+
+body {
+  margin: 0;
+  background: var(--tint);
+  color: var(--ink);
+  font-family: var(--sans);
+  line-height: 1.5;
+  display: flex; align-items: flex-start; gap: 32px;
+  padding: 32px;
+}
+
+/* ---------- settings panel ---------- */
+
+.panel {
+  flex: none; width: 380px;
+  position: sticky; top: 32px; max-height: calc(100vh - 64px); overflow-y: auto;
+  background: #fff; border: 1px solid var(--line); border-radius: 18px;
+  padding: 28px; box-shadow: 0 18px 40px -24px rgba(90, 40, 50, 0.35);
+}
+.back { display: inline-block; margin-bottom: 0.8rem; color: var(--rose); font-size: 0.92rem; text-underline-offset: 3px; }
+.back:hover { color: var(--rose-dark); }
+.panel h1 { font-family: var(--serif); font-weight: 500; font-size: 2.2rem; line-height: 1.1; margin: 0 0 0.5rem; }
+.panel-intro { margin: 0; color: var(--muted); font-size: 0.95rem; }
+
+.group { margin-top: 1.6rem; padding-top: 1.4rem; border-top: 1px solid var(--line); }
+.group h2 { font-family: var(--serif); font-weight: 500; font-size: 1.6rem; line-height: 1.2; margin: 0 0 1rem; }
+.tally { font-family: var(--sans); font-size: 0.8rem; color: var(--muted); letter-spacing: 0.04em; margin-left: 0.4rem; }
+
+/* ---------- forms ---------- */
+
+.field { margin-bottom: 0.9rem; min-width: 0; }
+.field label { display: block; font-weight: 500; font-size: 0.92rem; margin-bottom: 0.3rem; }
+.field input, .field select {
+  width: 100%; min-height: 42px; padding: 8px 12px; font: inherit; color: var(--ink);
+  background: #fffdfb; border: 1.5px solid #d9c3bb; border-radius: 10px;
+}
+.field input[readonly] { background: #f6efea; color: var(--muted); }
+.field input:focus, .field select:focus {
+  outline: none; border-color: var(--rose); box-shadow: 0 0 0 4px rgba(156, 70, 88, 0.16);
+}
+.field.has-error input { border-color: var(--error); }
+.field-row { display: grid; grid-template-columns: 1fr 72px 92px; gap: 10px; }
+.soft { color: var(--muted); font-weight: 400; }
+.help { font-size: 0.86rem; color: var(--muted); margin: 0.5rem 0 0; }
+.form-status {
+  margin: 0 0 0.9rem; padding: 9px 12px; border-radius: 10px; font-size: 0.9rem;
+  background: #fbeceb; border: 1px solid #e7bab7; color: var(--error);
+}
+
+.btn {
+  width: 100%; min-height: 46px; padding: 0 1.2rem; cursor: pointer;
+  background: var(--rose); color: #fff; border: 2px solid var(--rose); border-radius: 999px;
+  font: 500 0.82rem/1 var(--sans); letter-spacing: 0.14em; text-transform: uppercase;
+}
+.btn:hover { background: var(--rose-dark); border-color: var(--rose-dark); }
+.btn:disabled { opacity: 0.6; cursor: progress; }
+.btn-outline { background: transparent; color: var(--rose); }
+.btn-outline:hover { background: var(--rose); color: #fff; }
+.btn + .help { margin-bottom: 1.1rem; }
+.button-row { display: flex; gap: 10px; }
+
+/* ---------- guest list ---------- */
+
+.guest-list { list-style: none; margin: 1.2rem 0 0; padding: 0; }
+.guest { display: flex; align-items: flex-start; gap: 10px; padding: 10px 0; border-top: 1px solid var(--line); }
+.guest.is-editing { background: #fbf1ef; margin: 0 -10px; padding: 10px; border-radius: 10px; border-top-color: transparent; }
+.guest-info { flex: 1; min-width: 0; }
+.guest-info p { margin: 0; }
+.guest-name-line { font-weight: 500; overflow-wrap: anywhere; }
+.guest-address { font-size: 0.86rem; color: var(--muted); overflow-wrap: anywhere; }
+.guest-address.is-missing { color: #8a6a1c; }
+.guest-actions { flex: none; display: flex; gap: 4px; }
+.link-button {
+  background: none; border: 0; padding: 4px 6px; font: inherit; font-size: 0.86rem; cursor: pointer;
+  color: var(--rose); text-decoration: underline; text-underline-offset: 3px;
+}
+.link-button:hover { color: var(--rose-dark); }
+
+/* ---------- preview ---------- */
+
+.preview { flex: 1; min-width: 0; }
+.tabs { display: inline-flex; gap: 6px; padding: 5px; margin-bottom: 20px; background: #fff; border: 1px solid var(--line); border-radius: 999px; }
+.tab {
+  min-height: 38px; padding: 0 1.2rem; cursor: pointer; border: 0; border-radius: 999px;
+  background: transparent; color: var(--ink); font: 500 0.82rem/1 var(--sans); letter-spacing: 0.12em; text-transform: uppercase;
+}
+.tab[aria-selected="true"] { background: var(--rose); color: #fff; }
+
+.preview-note { flex-basis: 100%; margin: 0; padding: 12px 16px; border-radius: 12px; background: #fff; border: 1px solid var(--line); color: var(--muted); font-size: 0.95rem; max-width: 8.5in; }
+.preview-note.is-warning { background: #fdf6e3; border-color: #ecd9a6; color: #6d5514; }
+
+@media screen {
+  .view { display: none; overflow-x: auto; padding-bottom: 24px; }
+  .view.is-active { display: flex; flex-wrap: wrap; gap: 32px; align-items: flex-start; }
+}
+
+@media screen and (max-width: 1000px) {
+  body { flex-direction: column; align-items: stretch; padding: 16px; }
+  .panel { width: auto; position: static; max-height: none; }
+}
+
+/* ---------- printing ---------- */
+/* Each "PDF" button prints one of the two views. print.js sets data-print on <body>
+   to say which, and sets the page size to match (it adds an @page rule to this file). */
+
+@media print {
+  body { display: block; padding: 0; background: #fff; }
+  .panel, .tabs, .preview-note { display: none !important; }
+  .view { display: none; }
+  body[data-print="invitations"] #cards,
+  body[data-print="labels"] #labels { display: block; }
+}

@@ -25,7 +25,14 @@ server/                 the backend (plain Node, no npm dependencies)
   db.js                 the SQLite database and its tables
   config.js             settings read from the environment
 
-invitation/             the printable invitation (index.html, invitation.css, invitation.js, qr.svg)
+invitation/             the invitation maker, admin only: guest list, invitations, envelope labels
+  index.html            the page, with the invitation's wording in its card template
+  main.js               starts each part
+  guests.js             guest list and return address forms (address.js: the address fields)
+  cards.js, card.css    the invitations and their print layout
+  labels.js, labels.css the envelope label sheets
+  preview.js            preview tabs and printing
+  page.css              the page's own layout
 
 scripts/build.js        assembles web/ into dist/
 scripts/dev.js          local development: build, watch, run the backend
@@ -64,20 +71,16 @@ Local data is kept in `data/wedding.db`. Delete that folder to start fresh.
 
 ## Invitations
 
-The `invitation/` folder is a printable invitation in the site's colors and fonts. It is not part of the website and is never deployed.
+Sign in at `/admin` and choose **Invitations**. The page and the guest list are only served to a signed-in admin; anyone else is sent to the sign-in page.
 
-```bash
-npm run invitation
-```
+1. **Add guests.** Each guest is a name ("Dear ...") and a mailing address. Only the name is required; a guest without an address gets an invitation but no delivery label. Guests can be edited or removed at any time.
+2. **Set the return address** once. It goes on a return label for every invitation.
+3. **Generate the invitations PDF.** One invitation per guest, each with the site's invite code and a QR code that opens https://shaphoenix.com. Choose letter cardstock (two per sheet, with bleed and cut marks, for a print shop) or 5 × 7 cards (one per page).
+4. **Generate the labels PDF.** Return labels first, then delivery labels, each starting on a new sheet, laid out for Avery 5160 (30 per sheet) or Avery 5163 (10 per sheet). Long lines shrink to fit.
 
-Then open http://localhost:3100. Opening `invitation/index.html` directly in a browser works too.
+Each button opens the print window. Choose "Save as PDF", set margins to "None" and scale to 100%, and turn on "Background graphics" for the invitations. Print a test page of labels on plain paper and hold it against a label sheet before using the real labels.
 
-1. Type the guest names, one per line. Each line becomes its own invitation ("Dear ..."). Leave the list empty to get one invitation with a blank line to write on.
-2. Type the invite code. It is printed on every invitation, next to a QR code that opens https://shaphoenix.com.
-3. Pick the paper: a 5 × 7 inch card per page, or two per sheet of letter paper with a dashed line to cut along.
-4. Print, or save as PDF to send to a print shop. In the print window, set margins to "None" and turn on "Background graphics".
-
-The names and code you type are remembered in that browser only; they are not saved in this repository. To change the wording, edit the `<template>` in `invitation/index.html`.
+Guest names and addresses are stored in the site's database (the `invitees` table), never in this repository. The invite code is read from the server's `.env`, so the printed code always matches the one guests must type. To change the invitation's wording, edit the card template in `invitation/index.html`.
 
 ## How guests use it
 
@@ -166,11 +169,13 @@ If the GitHub repository is private, the server also needs permission to pull it
 
 ### Backing up the RSVPs
 
-Everything guests submit is in one file inside the `wedding_data` volume. To copy it out:
+Everything guests submit, and the invitation guest list with its home addresses, is in one file inside the `wedding_data` volume. To copy it out:
 
 ```bash
 docker compose cp wedding-api:/data/wedding.db ./wedding-backup.db
 ```
+
+Keep the copy somewhere private. Database files are ignored by git, so a backup in this folder is never committed.
 
 ## Before sending the link out
 

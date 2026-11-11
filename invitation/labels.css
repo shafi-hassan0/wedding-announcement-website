@@ -1,0 +1,54 @@
+/* Envelope label sheets. Each sheet is a portrait letter page laid out to the label
+   maker's measurements, so the text lands inside the peel-off labels. */
+
+/* Measurements for each kind of label sheet. To add another, copy a block and
+   change the numbers (they are printed on the label packet), then add it to LABEL_STOCK
+   in labels.js and to the "Label sheets" choices in index.html. */
+.labels.avery5160 {
+  --cols: 3;
+  --label-w: 2.625in; --label-h: 1in;
+  --margin-top: 0.5in; --margin-side: 0.1875in;
+  --col-gap: 0.125in;
+  --name-size: 11pt; --line-size: 8.6pt; --label-pad: 0.08in 0.14in;
+}
+.labels.avery5163 {
+  --cols: 2;
+  --label-w: 4in; --label-h: 2in;
+  --margin-top: 0.5in; --margin-side: 0.15625in;
+  --col-gap: 0.1875in;
+  --name-size: 17pt; --line-size: 12.5pt; --label-pad: 0.15in 0.25in;
+}
+
+.label-sheet {
+  flex: none; width: 8.5in; height: 11in; overflow: hidden;
+  padding: var(--margin-top) var(--margin-side) 0;
+  display: grid; align-content: start;
+  grid-template-columns: repeat(var(--cols), var(--label-w));
+  grid-auto-rows: var(--label-h);
+  column-gap: var(--col-gap);
+  background: #fff; color: #1f1718;
+}
+
+.label {
+  overflow: hidden; padding: var(--label-pad);
+  display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;
+}
+.label p { margin: 0; max-width: 100%; white-space: nowrap; line-height: 1.18; font-size: var(--line-size); }
+.label .label-name { font-family: var(--serif); font-weight: 600; font-size: var(--name-size); line-height: 1.1; margin-bottom: 0.02in; }
+
+/* Return labels are a touch smaller and quieter than the delivery labels. */
+.label.is-return .label-name { font-size: calc(var(--name-size) * 0.92); font-style: italic; font-weight: 500; color: #7d3345; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.label.is-return p { font-size: calc(var(--line-size) * 0.92); }
+
+@media screen {
+  .label-sheet { box-shadow: var(--sheet-shadow); }
+  /* Faint outlines so the label positions are visible in the preview. They are not printed. */
+  .label { outline: 1px dashed #dccfc9; outline-offset: -1px; border-radius: 0.09in; }
+  .sheet-title { flex-basis: 100%; margin: 0; font-family: var(--serif); font-size: 1.5rem; }
+  .sheet-title + .label-sheet { margin-top: -16px; }
+}
+
+@media print {
+  .sheet-title { display: none; }
+  .label-sheet { break-after: page; break-inside: avoid; }
+}

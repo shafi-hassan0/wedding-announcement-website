@@ -9,45 +9,122 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@400;500;600&family=Pinyon+Script&display=swap" rel="stylesheet">
   <!-- This page is only served to a signed-in admin, at /admin/invitations (see server/routes/invitations.js). -->
-  <link rel="stylesheet" href="/admin/invitations/invitation.css" id="invitation-styles">
-  <script src="/admin/invitations/invitation.js" defer></script>
+  <link rel="stylesheet" href="/admin/invitations/page.css" id="page-styles">
+  <link rel="stylesheet" href="/admin/invitations/card.css">
+  <link rel="stylesheet" href="/admin/invitations/labels.css">
+  <script type="module" src="/admin/invitations/main.js"></script>
 </head>
 <body>
 
-  <!-- Settings. Shown on screen only; never printed. -->
+  <!-- Guest list and settings. Shown on screen only; never printed. -->
   <aside class="panel">
     <a class="back" href="/admin">← Back to admin</a>
     <h1>Invitations</h1>
-    <p class="panel-intro">Add your guests, check the preview, then print. The names you type are remembered in this browser only.</p>
+    <p class="panel-intro">Add everyone you are inviting, then generate two PDFs: the invitations, and the envelope labels.</p>
 
-    <div class="field">
-      <label for="names">Guest names</label>
-      <textarea id="names" rows="8" placeholder="Aunt Maria and family&#10;Mr. and Mrs. Ahmed&#10;Jordan"></textarea>
-      <p class="help">One invitation per line. Leave it empty for a single invitation with a blank line to write a name on by hand.</p>
-    </div>
+    <section class="group">
+      <h2>Guests <span class="tally" id="guest-count"></span></h2>
 
-    <div class="field">
-      <label for="code">Invite code</label>
-      <input id="code" type="text" readonly>
-      <p class="help">Taken from the website’s settings, so it always matches what guests must type. Printed on every invitation.</p>
-    </div>
+      <form id="guest-form" novalidate>
+        <!-- Name and address fields are added here by address.js -->
+        <div data-address-fields="guest" data-name-label="Name on the invitation"></div>
+        <p class="form-status" role="alert" hidden></p>
+        <div class="button-row">
+          <button type="submit" class="btn" id="guest-submit">Add guest</button>
+          <button type="button" class="btn btn-outline" id="guest-cancel" hidden>Cancel</button>
+        </div>
+        <p class="help">Only the name is required. A guest with no address gets an invitation but no delivery label.</p>
+      </form>
 
-    <div class="field">
-      <label for="paper">Paper</label>
-      <select id="paper">
-        <option value="letter">Letter paper, two per sheet, with cut marks (print shop)</option>
-        <option value="card">5 × 7 inch card, one per page (home printer)</option>
-      </select>
-    </div>
+      <ul class="guest-list" id="guest-list"></ul>
+    </section>
 
-    <button type="button" class="btn" id="print">Print or save as PDF</button>
-    <p class="help" id="count"></p>
-    <p class="help">In the print window, set margins to “None”, scale to 100%, and turn on “Background graphics”.</p>
+    <section class="group">
+      <h2>Return address</h2>
+      <form id="return-form" novalidate>
+        <div data-address-fields="return" data-name-label="Name on the return label"></div>
+        <p class="form-status" role="alert" hidden></p>
+        <button type="submit" class="btn btn-outline">Save return address</button>
+        <p class="help" id="return-saved" hidden>Saved.</p>
+      </form>
+    </section>
+
+    <section class="group">
+      <h2>Generate</h2>
+
+      <div class="field">
+        <label for="paper">Invitation paper</label>
+        <select id="paper">
+          <option value="letter">Letter cardstock, two per sheet, with cut marks</option>
+          <option value="card">5 × 7 inch card, one per page</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="label-stock">Label sheets</label>
+        <select id="label-stock">
+          <option value="avery5160">Avery 5160: 30 per sheet (1 × 2⅝ in)</option>
+          <option value="avery5163">Avery 5163: 10 per sheet (2 × 4 in)</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="code">Invite code</label>
+        <input id="code" type="text" readonly>
+        <p class="help">Taken from the website’s settings and printed on every invitation.</p>
+      </div>
+
+      <button type="button" class="btn" id="print-invitations">Invitations PDF</button>
+      <p class="help" id="invitations-summary"></p>
+
+      <button type="button" class="btn" id="print-labels">Labels PDF</button>
+      <p class="help" id="labels-summary"></p>
+
+      <p class="help">Each button opens the print window. Choose “Save as PDF”, set margins to “None” and scale to 100%. For the invitations, also turn on “Background graphics”.</p>
+    </section>
   </aside>
 
-  <!-- The invitations. invitation.js makes one copy of the template below per guest name. -->
-  <main class="cards" id="cards"></main>
+  <!-- Preview of both PDFs. Each sheet is drawn at its real printed size. -->
+  <main class="preview">
+    <div class="tabs" role="tablist" aria-label="Preview">
+      <button type="button" class="tab" role="tab" id="tab-invitations" aria-controls="cards" aria-selected="true">Invitations</button>
+      <button type="button" class="tab" role="tab" id="tab-labels" aria-controls="labels" aria-selected="false">Labels</button>
+    </div>
+    <div class="view cards is-active" id="cards" role="tabpanel" aria-labelledby="tab-invitations"></div>
+    <div class="view labels" id="labels" role="tabpanel" aria-labelledby="tab-labels"></div>
+  </main>
 
+  <!-- Name and address inputs, used by both the guest form and the return address form. -->
+  <template id="address-fields-template">
+    <div class="field">
+      <label data-for="name"></label>
+      <input data-field="name" type="text" maxlength="80" autocomplete="off" required>
+    </div>
+    <div class="field">
+      <label data-for="line1">Street address</label>
+      <input data-field="line1" type="text" maxlength="100" autocomplete="off">
+    </div>
+    <div class="field">
+      <label data-for="line2">Apartment, suite, etc. <span class="soft">(optional)</span></label>
+      <input data-field="line2" type="text" maxlength="60" autocomplete="off">
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label data-for="city">City</label>
+        <input data-field="city" type="text" maxlength="60" autocomplete="off">
+      </div>
+      <div class="field field-state">
+        <label data-for="state">State</label>
+        <input data-field="state" type="text" maxlength="30" autocomplete="off">
+      </div>
+      <div class="field field-zip">
+        <label data-for="zip">ZIP</label>
+        <input data-field="zip" type="text" maxlength="12" autocomplete="off" inputmode="numeric">
+      </div>
+    </div>
+  </template>
+
+  <!-- One invitation. cards.js makes a copy per guest and fills in the name and invite code. -->
   <template id="card-template">
     <article class="card">
       <div class="card-frame">

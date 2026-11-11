@@ -1,19 +1,6 @@
-/* Printable invitation, in the same colors and fonts as the website. */
+/* The invitation card itself, and the sheets it is printed on. Colors and fonts come from page.css. */
 
 :root {
-  --bg: #fbf5ef;
-  --tint: #f6e9e3;
-  --rose: #9c4658;
-  --rose-dark: #7d3345;
-  --rose-soft: #e9c9c6;
-  --gold: #b78a66;
-  --ink: #3a2a2b;
-  --muted: #74605f;
-  --line: #ead9d1;
-  --serif: "Cormorant Garamond", Georgia, "Times New Roman", serif;
-  --sans: "Jost", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --script: "Pinyon Script", "Cormorant Garamond", cursive;
-
   /* How far the background runs past the cut line, so a slightly-off cut shows no white edge. */
   --bleed: 0.125in;
   --card-background:
@@ -21,53 +8,6 @@
     radial-gradient(2.6in 1.8in at 0% 100%, rgba(183, 138, 102, 0.16), transparent 70%),
     var(--bg);
 }
-
-*, *::before, *::after { box-sizing: border-box; }
-[hidden] { display: none !important; }
-
-body {
-  margin: 0;
-  background: var(--tint);
-  color: var(--ink);
-  font-family: var(--sans);
-  line-height: 1.5;
-  display: flex; align-items: flex-start; gap: 32px;
-  padding: 32px;
-}
-
-/* ---------- settings panel (screen only) ---------- */
-
-.panel {
-  flex: none; width: 340px; position: sticky; top: 32px;
-  background: #fff; border: 1px solid var(--line); border-radius: 18px;
-  padding: 28px; box-shadow: 0 18px 40px -24px rgba(90, 40, 50, 0.35);
-}
-.back { display: inline-block; margin-bottom: 0.8rem; color: var(--rose); font-size: 0.92rem; text-underline-offset: 3px; }
-.back:hover { color: var(--rose-dark); }
-.panel h1 { font-family: var(--serif); font-weight: 500; font-size: 2.2rem; line-height: 1.1; margin: 0 0 0.5rem; }
-.panel-intro { margin: 0 0 1.4rem; color: var(--muted); font-size: 0.95rem; }
-.field { margin-bottom: 1.3rem; }
-.field label { display: block; font-weight: 500; margin-bottom: 0.4rem; }
-.field input, .field select, .field textarea {
-  width: 100%; padding: 10px 14px; font: inherit; color: var(--ink);
-  background: #fffdfb; border: 1.5px solid #d9c3bb; border-radius: 12px;
-}
-.field input[readonly] { background: #f6efea; color: var(--muted); }
-.field textarea { resize: vertical; }
-.field input:focus, .field select:focus, .field textarea:focus {
-  outline: none; border-color: var(--rose); box-shadow: 0 0 0 4px rgba(156, 70, 88, 0.16);
-}
-.help { font-size: 0.88rem; color: var(--muted); margin: 0.4rem 0 0; }
-.btn {
-  width: 100%; min-height: 50px; padding: 0 1.5rem; cursor: pointer;
-  background: var(--rose); color: #fff; border: 2px solid var(--rose); border-radius: 999px;
-  font: 500 0.9rem/1 var(--sans); letter-spacing: 0.16em; text-transform: uppercase;
-}
-.btn:hover { background: var(--rose-dark); border-color: var(--rose-dark); }
-
-/* ---------- the invitations ---------- */
-
-.cards { flex: 1; min-width: 0; display: flex; flex-wrap: wrap; gap: 32px; justify-content: center; }
 
 /* One invitation: exactly 5 by 7 inches, on screen and on paper. */
 .card {
@@ -132,8 +72,8 @@ body {
 
 /* ---------- layout: one 5 x 7 card per page ---------- */
 
-.sheet { display: contents; }
-.cards:not(.two-up) .card { box-shadow: 0 18px 40px -20px rgba(90, 40, 50, 0.45); }
+.cards .sheet { display: contents; }
+.cards:not(.two-up) .card { box-shadow: var(--sheet-shadow); }
 .cards:not(.two-up) .trim { display: contents; }
 .cards:not(.two-up) .mark { display: none; }
 
@@ -142,17 +82,17 @@ body {
    invitations in the middle, their background running past the cut line (the
    "bleed"), and short black marks in the margins showing where to cut. */
 
-.two-up .sheet {
+.cards.two-up .sheet {
   flex: none; width: 11in; height: 8.5in; overflow: hidden;
   display: flex; align-items: center; justify-content: center;
-  background: #fff; box-shadow: 0 18px 40px -20px rgba(90, 40, 50, 0.45);
+  background: #fff; box-shadow: var(--sheet-shadow);
 }
 /* The trim box: its edges are the cut lines. The crop marks are placed around it. */
 .two-up .trim { position: relative; display: flex; }
 
-/* Stretch each card's background past the outer cut lines, but not across the shared middle cut. */
+/* Stretch each card's background past the outer cut lines, but not across the shared middle cut.
+   (":of-type" because the crop marks sit in the same box as the cards.) */
 .two-up .card::before { inset: calc(-1 * var(--bleed)); }
-/* (":of-type" because the crop marks sit in the same box as the cards.) */
 .two-up .card:first-of-type:not(:only-of-type)::before { right: 0; }
 .two-up .card:last-of-type:not(:only-of-type)::before { left: 0; }
 
@@ -170,25 +110,8 @@ body {
 .mark-h.at-top    { top: 0; }
 .mark-h.at-bottom { bottom: 0; }
 
-/* ---------- small screens ---------- */
-
-@media screen and (max-width: 900px) {
-  body { flex-direction: column; align-items: stretch; padding: 16px; }
-  .panel { width: auto; position: static; }
-}
-@media screen {
-  .cards { overflow-x: auto; padding-bottom: 24px; }
-  .two-up { justify-content: flex-start; }
-}
-
-/* ---------- printing ---------- */
-/* The page size itself (5 x 7 in, or 11 x 8.5 in) is set by invitation.js from the Paper setting. */
-
 @media print {
-  body { display: block; padding: 0; background: #fff; }
-  .panel { display: none; }
-  .cards { display: block; }
-  .card, .two-up .sheet { box-shadow: none !important; break-inside: avoid; }
+  .card, .cards.two-up .sheet { box-shadow: none !important; break-inside: avoid; }
   .cards:not(.two-up) .card { break-after: page; }
-  .two-up .sheet { break-after: page; }
+  .cards.two-up .sheet { break-after: page; }
 }

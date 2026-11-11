@@ -45,6 +45,26 @@ db.exec(`
     created_at TEXT NOT NULL
   );
 
+  -- People to send an invitation to, with their mailing address. Admin only:
+  -- nothing on the public site reads this table.
+  CREATE TABLE IF NOT EXISTS invitees (
+    id         INTEGER PRIMARY KEY AUTOINCREMENT,
+    name       TEXT NOT NULL,
+    line1      TEXT NOT NULL DEFAULT '',
+    line2      TEXT NOT NULL DEFAULT '',
+    city       TEXT NOT NULL DEFAULT '',
+    state      TEXT NOT NULL DEFAULT '',
+    zip        TEXT NOT NULL DEFAULT '',
+    created_at TEXT NOT NULL,
+    updated_at TEXT NOT NULL
+  );
+
+  -- Small named values, stored as JSON. Currently just the return address for the envelopes.
+  CREATE TABLE IF NOT EXISTS settings (
+    key   TEXT PRIMARY KEY,
+    value TEXT NOT NULL
+  );
+
   -- Rate limiting: one counter per key per time window. Reset on every start.
   CREATE TABLE IF NOT EXISTS attempts (
     key   TEXT    NOT NULL,
