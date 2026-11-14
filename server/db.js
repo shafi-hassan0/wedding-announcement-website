@@ -36,6 +36,27 @@ db.exec(`
   );
   CREATE INDEX IF NOT EXISTS notes_status ON notes(status, created_at);
 
+  -- Updates written by Shafi and Phoenix on the admin page. Anyone can read them.
+  CREATE TABLE IF NOT EXISTS posts (
+    id         INTEGER PRIMARY KEY AUTOINCREMENT,
+    title      TEXT NOT NULL,
+    body       TEXT NOT NULL,
+    created_at TEXT NOT NULL,
+    updated_at TEXT NOT NULL
+  );
+
+  -- Guests' comments on an update. Like guestbook notes: only "approved" ones are shown.
+  CREATE TABLE IF NOT EXISTS comments (
+    id         INTEGER PRIMARY KEY AUTOINCREMENT,
+    post_id    INTEGER NOT NULL REFERENCES posts(id) ON DELETE CASCADE,
+    rsvp_id    INTEGER NOT NULL REFERENCES rsvps(id) ON DELETE CASCADE,
+    name       TEXT    NOT NULL,
+    message    TEXT    NOT NULL,
+    status     TEXT    NOT NULL DEFAULT 'pending',
+    created_at TEXT    NOT NULL
+  );
+  CREATE INDEX IF NOT EXISTS comments_post ON comments(post_id, status, created_at);
+
   -- Messages sent through the contact form.
   CREATE TABLE IF NOT EXISTS contacts (
     id         INTEGER PRIMARY KEY AUTOINCREMENT,

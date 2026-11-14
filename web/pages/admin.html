@@ -32,7 +32,7 @@
         <div class="admin-bar">
           <div>
             <h1>Celebration admin</h1>
-            <p class="help">RSVPs, guestbook notes and messages.</p>
+            <p class="help">RSVPs, guestbook notes, updates and messages.</p>
           </div>
           <div class="admin-actions">
             <a class="btn btn-outline" href="/admin/invitations">Invitations</a>
@@ -49,6 +49,34 @@
 
         <h2>Approved notes</h2>
         <div id="approved"></div>
+
+        <h2>Updates</h2>
+        <div class="card form-card">
+          <h3 id="post-form-title">Write an update</h3>
+          <p class="help">Shown in the Updates section of the home page, newest first. Anyone with the link can read updates; only guests who have RSVP’d can comment. Web addresses become links.</p>
+          <form id="post-form" class="post-form" novalidate>
+            <div class="field">
+              <label for="post-title">Title</label>
+              <input id="post-title" name="title" type="text" maxlength="120" required>
+            </div>
+            <div class="field">
+              <label for="post-body">Update</label>
+              <textarea id="post-body" name="body" rows="7" maxlength="5000" required></textarea>
+            </div>
+            <p class="form-status" role="alert" hidden></p>
+            <div class="admin-actions">
+              <button type="submit" class="btn" id="post-submit">Publish</button>
+              <button type="button" class="btn btn-outline" id="post-cancel" hidden>Cancel</button>
+            </div>
+          </form>
+        </div>
+        <div id="posts" class="admin-posts"></div>
+
+        <h2>Comments waiting for approval</h2>
+        <div id="comments-pending"></div>
+
+        <h2>Approved comments</h2>
+        <div id="comments-approved"></div>
 
         <h2>RSVPs</h2>
         <div class="card table-scroll">

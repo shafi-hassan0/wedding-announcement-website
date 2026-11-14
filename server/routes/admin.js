@@ -1,4 +1,4 @@
-// The admin page's data: RSVPs, guestbook moderation and contact messages.
+// The admin page's data: RSVPs, guestbook moderation, updates and contact messages.
 
 import { config } from '../config.js';
 import { all, run } from '../db.js';
@@ -10,6 +10,8 @@ import { clearCookie, requireAdmin, safeEqual, sessionCookie } from '../lib/sess
 export async function adminLogin(req) {
   const body = await readBody(req);
   rateLimit(`admin:${clientIp(req)}`, 10, 3600);
+  // A second cap across every address, so guessing spread over many machines is stopped too.
+  rateLimit('admin:everyone', 60, 3600);
   if (!safeEqual(String(body.password || ''), config.adminPassword)) {
     throw new HttpError(401, 'That password is not right.', 'password');
   }
@@ -29,6 +31,9 @@ export function adminData(req) {
   const rsvps = all('SELECT id, name, contact_raw, attending, guests, dietary, note, updated_at FROM rsvps ORDER BY updated_at DESC');
   const notes = all('SELECT id, name, message, status, created_at FROM notes ORDER BY status DESC, created_at DESC');
   const contacts = all('SELECT id, name, reply_to, message, created_at FROM contacts ORDER BY created_at DESC');
+  const posts = all('SELECT id, title, body, created_at, updated_at FROM posts ORDER BY created_at DESC');
+  const comments = all(`SELECT c.id, c.name, c.message, c.status, c.created_at, p.title AS post_title
+    FROM comments c JOIN posts p ON p.id = c.post_id ORDER BY c.status DESC, c.created_at DESC`);
 
   const coming = rsvps.filter((r) => r.attending);
   return json({
@@ -38,9 +43,12 @@ export function adminData(req) {
       headcount: coming.reduce((sum, r) => sum + 1 + r.guests, 0),
       declined: rsvps.length - coming.length,
       pendingNotes: notes.filter((n) => n.status === 'pending').length,
+      pendingComments: comments.filter((c) => c.status === 'pending').length,
     },
     rsvps,
     notes,
+    posts,
+    comments,
     contacts,
   });
 }

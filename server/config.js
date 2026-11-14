@@ -17,7 +17,11 @@ if (env.SESSION_SECRET.length < 16) {
   process.exit(1);
 }
 
-const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+if (env.ADMIN_PASSWORD.length < 16) {
+  console.warn('ADMIN_PASSWORD is shorter than 16 characters. It guards the guest list and addresses: use a long random one.');
+}
+
+const ROOT =path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
 export const config = {
   port: Number(env.PORT) || 3000,
@@ -45,4 +49,5 @@ export const config = {
   guestSessionSeconds: 60 * 60 * 24 * 400, // about 13 months
   adminSessionSeconds: 60 * 60 * 12,
   maxNotesPerGuest: 5,
+  maxCommentsPerPost: 5, // per guest, on any one update
 };

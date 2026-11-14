@@ -1,0 +1,17 @@
+/* Updates: posts from Shafi and Phoenix, each with its comments and comment form. */
+
+.posts { display: grid; gap: 28px; max-width: 760px; margin-inline: auto; }
+.posts-empty { text-align: center; color: var(--muted); font-family: var(--serif); font-size: 1.35rem; font-style: italic; margin: 0; }
+.post { padding: clamp(24px, 5vw, 44px); }
+.post-date { margin: 0 0 0.5rem; font-size: 0.8rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); }
+.post-title { margin-bottom: 1.1rem; }
+.post-body p { white-space: pre-wrap; overflow-wrap: anywhere; }
+.post-body p:last-child { margin-bottom: 0; }
+
+.post-comments { margin-top: 1.8rem; padding-top: 1.5rem; border-top: 1px solid var(--line); }
+.comments-title { margin: 0 0 1rem; font-size: 0.8rem; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: var(--rose); }
+.comment { margin: 0 0 1rem; padding: 16px 20px; background: #fffaf6; border: 1px solid var(--line); border-radius: 14px; }
+.comment-message { font-family: var(--serif); font-size: 1.25rem; line-height: 1.4; white-space: pre-wrap; overflow-wrap: anywhere; margin: 0 0 0.6rem; }
+.comment-form { margin-top: 1.4rem; }
+.comment-form .field { margin-bottom: 1rem; }
+.comment-locked { margin: 0; color: var(--muted); font-size: 1rem; }

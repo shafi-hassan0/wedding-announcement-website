@@ -1,4 +1,4 @@
-// Backend entry point: RSVPs, guestbook, contact form and admin.
+// Backend entry point: RSVPs, guestbook, updates, contact form and admin.
 //
 // A plain Node server with no npm dependencies. In production nginx serves the
 // built site and proxies /api/ here; run directly (npm run dev), this server
@@ -14,6 +14,7 @@ import { sendContactMessage } from './routes/contact.js';
 import { addNote, listNotes } from './routes/guestbook.js';
 import { inviteCode, isInvitationPath, serveInvitations } from './routes/invitations.js';
 import { addInvitee, changeInvitee, listInvitees, saveReturnAddress } from './routes/invitees.js';
+import { addComment, addPost, changePost, listPosts, moderateComment } from './routes/posts.js';
 import { me, signIn, signOut, submitRsvp } from './routes/rsvp.js';
 
 // Every API endpoint, in one place.
@@ -28,12 +29,17 @@ const routes = {
   'GET /api/guestbook': listNotes,
   'POST /api/guestbook': addNote,
 
+  'GET /api/posts': listPosts,
+  'POST /api/comments': addComment,
+
   'POST /api/contact': sendContactMessage,
 
   'POST /api/admin/login': adminLogin,
   'POST /api/admin/logout': adminLogout,
   'GET /api/admin/data': adminData,
   'GET /api/admin/invite-code': inviteCode,
+
+  'POST /api/admin/posts': addPost,
 
   'GET /api/admin/invitees': listInvitees,
   'POST /api/admin/invitees': addInvitee,
@@ -46,6 +52,8 @@ const itemRoutes = {
   rsvps: deleteRsvp,
   contacts: deleteContactMessage,
   invitees: changeInvitee,
+  posts: changePost,
+  comments: moderateComment,
 };
 
 async function handleApi(req, url) {

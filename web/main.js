@@ -1,6 +1,7 @@
 // Entry point for the celebration page. Each section that does something has its
 // own logic file next to its HTML and CSS in components/; this file just starts them.
 
+import { initBlog } from './components/blog/blog.js';
 import { initContact } from './components/contact/contact.js';
 import { initGuestbook } from './components/guestbook/guestbook.js';
 import { initNav } from './components/nav/nav.js';
@@ -16,6 +17,7 @@ initHearts();
 
 initNav();
 initRsvp();
+initBlog();
 initGuestbook();
 initContact();
 

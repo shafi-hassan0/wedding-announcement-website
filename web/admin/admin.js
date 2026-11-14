@@ -1,20 +1,9 @@
-// Admin page: review RSVPs, approve guestbook notes, read contact messages.
+// Admin page: review RSVPs, approve guestbook notes and comments, publish updates,
+// read contact messages.
 
 import { api } from '../shared/api.js';
-
-const $ = (id) => document.getElementById(id);
-
-// Builds an element; all text goes in as text, never as HTML.
-function el(tag, className, text) {
-  const node = document.createElement(tag);
-  if (className) node.className = className;
-  if (text !== undefined) node.textContent = text;
-  return node;
-}
-
-function when(iso) {
-  return new Date(iso).toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' });
-}
+import { $, el, when } from './dom.js';
+import { initPosts, renderPosts } from './posts.js';
 
 function show(loggedIn) {
   $('login').hidden = loggedIn;
@@ -84,8 +73,13 @@ function contactRow(message) {
   return tr;
 }
 
-function noteCard(note) {
+/**
+ * A guestbook note or a comment, with its approve / take down / delete buttons.
+ * `kind` is "notes" or "comments"; a comment also says which update it is on.
+ */
+function noteCard(note, kind = 'notes') {
   const card = el('div', 'card admin-note');
+  if (note.post_title) card.append(el('p', 'admin-note-on', `On “${note.post_title}”`));
   card.append(el('p', 'note-message', note.message));
   const meta = el('p', 'note-meta');
   meta.append(el('span', 'note-name', note.name), ` · ${when(note.created_at)}`);
@@ -99,14 +93,14 @@ function noteCard(note) {
     button.addEventListener('click', async () => {
       if (confirmText && !confirm(confirmText)) return;
       button.disabled = true;
-      await api(`/api/admin/notes/${note.id}`, { action });
+      await api(`/api/admin/${kind}/${note.id}`, { action });
       load();
     });
     actions.append(button);
   };
   if (note.status === 'approved') act('Take off the site', 'hide', 'btn btn-outline');
   else act('Approve', 'approve', 'btn');
-  act('Delete', 'delete', 'btn btn-outline', 'Delete this note for good?');
+  act('Delete', 'delete', 'btn btn-outline', kind === 'comments' ? 'Delete this comment for good?' : 'Delete this note for good?');
   card.append(actions);
   return card;
 }
@@ -127,6 +121,7 @@ async function load() {
     [data.totals.declined, 'Said no'],
     [data.totals.responses, 'Responses'],
     [data.totals.pendingNotes, 'Notes to review'],
+    [data.totals.pendingComments, 'Comments to review'],
   ];
   $('stats').replaceChildren(...stats.map(([value, label]) => {
     const card = el('div', 'card stat');
@@ -136,8 +131,15 @@ async function load() {
 
   const pending = data.notes.filter((n) => n.status !== 'approved');
   const approved = data.notes.filter((n) => n.status === 'approved');
-  $('pending').replaceChildren(...(pending.length ? pending.map(noteCard) : [el('p', 'empty', 'Nothing waiting. You are all caught up.')]));
-  $('approved').replaceChildren(...(approved.length ? approved.map(noteCard) : [el('p', 'empty', 'No approved notes yet.')]));
+  $('pending').replaceChildren(...(pending.length ? pending.map((n) => noteCard(n)) : [el('p', 'empty', 'Nothing waiting. You are all caught up.')]));
+  $('approved').replaceChildren(...(approved.length ? approved.map((n) => noteCard(n)) : [el('p', 'empty', 'No approved notes yet.')]));
+
+  renderPosts(data.posts);
+  const commentCard = (c) => noteCard(c, 'comments');
+  const waiting = data.comments.filter((c) => c.status !== 'approved');
+  const shown = data.comments.filter((c) => c.status === 'approved');
+  $('comments-pending').replaceChildren(...(waiting.length ? waiting.map(commentCard) : [el('p', 'empty', 'No comments waiting.')]));
+  $('comments-approved').replaceChildren(...(shown.length ? shown.map(commentCard) : [el('p', 'empty', 'No approved comments yet.')]));
 
   $('rsvps').replaceChildren(...(data.rsvps.length ? data.rsvps.map(rsvpRow) : [emptyRow(8, 'No RSVPs yet.')]));
 
@@ -158,6 +160,7 @@ $('login-form').addEventListener('submit', async (event) => {
   }
 });
 
+initPosts(load);
 $('refresh').addEventListener('click', load);
 $('logout').addEventListener('click', async () => {
   await api('/api/admin/logout', {});

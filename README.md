@@ -1,6 +1,6 @@
 # Shafi & Phoenix: celebration site
 
-A one-page site announcing the marriage and inviting both families to the park celebration, with RSVPs, a guestbook and a contact form. It runs on the same home server as the portfolio site, behind the same Cloudflare Tunnel.
+A one-page site announcing the marriage and inviting both families to the park celebration, with RSVPs, a guestbook, updates that guests can comment on, and a contact form. It runs on the same home server as the portfolio site, behind the same Cloudflare Tunnel.
 
 ## Layout
 
@@ -11,6 +11,7 @@ web/                    the site guests see
     hero/                 hero.html, hero.css
     rsvp/                 rsvp.html, rsvp.css, rsvp.js
     guestbook/            guestbook.html, guestbook.css, guestbook.js
+    blog/                 blog.html, blog.css, blog.js (the Updates section)
     ...                   nav, announcement, story, celebration, food,
                           good-to-know, gifts, closing, contact, footer
   shared/               styles and logic used by more than one section
@@ -20,7 +21,7 @@ web/                    the site guests see
 
 server/                 the backend (plain Node, no npm dependencies)
   index.js              entry point and the list of API routes
-  routes/               one file per feature: rsvp, guestbook, contact, admin
+  routes/               one file per feature: rsvp, guestbook, posts, contact, admin
   lib/                  sessions, validation, rate limiting, email, http helpers
   db.js                 the SQLite database and its tables
   config.js             settings read from the environment
@@ -86,11 +87,27 @@ Guest names and addresses are stored in the site's database (the `invitees` tabl
 
 1. A guest enters the invite code and RSVPs. Their browser remembers them.
 2. The guestbook opens. Notes they write stay hidden until one of you approves them on the admin page.
-3. On a new device, "Already RSVP'd?" finds their RSVP from the invite code plus the phone or email they used.
+3. They can also read and leave comments on your updates. Comments wait for approval the same way.
+4. On a new device, "Already RSVP'd?" finds their RSVP from the invite code plus the phone or email they used.
 
 Sending the RSVP form again with the same phone or email updates that RSVP instead of creating a second one.
 
-On the admin page, each RSVP has a **Delete** button for test entries and mistakes. Deleting an RSVP also deletes that guest's guestbook notes, and their browser is no longer recognised, so they would need to RSVP again. Contact form messages have a **Delete** button too.
+On the admin page, each RSVP has a **Delete** button for test entries and mistakes. Deleting an RSVP also deletes that guest's guestbook notes and comments, and their browser is no longer recognised, so they would need to RSVP again. Contact form messages have a **Delete** button too.
+
+## Updates
+
+Write updates in the **Updates** part of the admin page: a title and some text (web addresses become links). They show in the Updates section of the home page, newest first, and can be edited or deleted later. Deleting an update deletes its comments.
+
+Anyone who has the link to the site can read updates, the same as the rest of the page, so keep anything private out of them. Comments are only shown to guests who have RSVP'd, and only after one of you approves them.
+
+## Who can see the guest list
+
+The invitation guest list (names and home addresses) is only ever sent to a browser signed in with `ADMIN_PASSWORD`. Nothing on the public page reads it, and RSVP'ing does not give access to it. That makes the admin password the one key to it:
+
+- Use a long random password (16 characters or more) that is not used anywhere else. The server prints a warning at start if it is shorter.
+- Changing `ADMIN_PASSWORD` signs out every admin session straight away. Do that if a device that was signed in is lost.
+- Wrong passwords are limited to 10 an hour per visitor and 60 an hour overall.
+- For a second lock, put a Cloudflare Access policy on `/admin*` and `/api/admin/*` so only your two email addresses can even reach the sign-in page.
 
 ## Settings (`.env`)
 

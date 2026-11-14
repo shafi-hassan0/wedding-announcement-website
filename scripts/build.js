@@ -37,6 +37,7 @@ const STYLES = [
   'components/celebration/celebration.css',
   'components/food/food.css',
   'components/rsvp/rsvp.css',
+  'components/blog/blog.css',
   'components/guestbook/guestbook.css',
   'components/good-to-know/good-to-know.css',
   'components/gifts/gifts.css',
