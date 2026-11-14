@@ -138,6 +138,12 @@ There's no strict schedule, and nothing you can be late for. Come when you can a
 - Coleslaw
 - Shrimp Cocktail
 
+**Something sweet**
+- A Celebration Cake, Cut Together
+- Fudge Brownies
+- Chocolate Chip Cookies
+- Fresh Fruit
+
 **To drink**
 - Soft Drinks
 - Sparkling Cider, for Toasting

@@ -1,7 +1,8 @@
-/* The Food: three menu cards whose dishes appear one at a time. */
+/* The Food: four menu cards whose dishes appear one at a time. */
 
 .menu { display: grid; gap: 24px; }
-@media (min-width: 760px) { .menu { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 640px) { .menu { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1040px) { .menu { grid-template-columns: repeat(4, 1fr); } }
 .menu-card { padding: 32px 24px; text-align: center; }
 .menu-card h3 { font-style: italic; color: var(--rose); margin-bottom: 1rem; }
 .menu-card h3::after { content: ""; display: block; width: 40px; height: 1px; background: var(--gold); margin: 0.9rem auto 0; }
