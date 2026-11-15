@@ -167,7 +167,7 @@ Form fields:
 - Full name
 - Phone number or email (helper text: *So Shafi and Phoenix can reach you if plans change, and so you can come back later to leave them a message.*)
 - Will you be there? (Wouldn't miss it / Sadly can't make it)
-- How many are coming with you? (kids count!)
+- How many are coming? (including you): Adults / Children / Babies
 - Dietary needs or allergies *(optional)*
 - A note for Shafi and Phoenix *(optional)*
 

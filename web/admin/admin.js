@@ -50,8 +50,11 @@ function deleteCell(label, question, url) {
 
 /** One line of the RSVP table. */
 function rsvpRow(rsvp) {
+  const count = (n) => (rsvp.attending ? String(n) : '-');
   const tr = row([
-    [rsvp.name], [rsvp.attending ? 'Yes' : 'No'], [rsvp.attending ? String(1 + rsvp.guests) : '-'],
+    [rsvp.name], [rsvp.attending ? 'Yes' : 'No'],
+    [count(rsvp.adults)], [count(rsvp.children)], [count(rsvp.babies)],
+    [count(rsvp.adults + rsvp.children + rsvp.babies)],
     [rsvp.contact_raw], [rsvp.dietary || '-', 'wrap'], [rsvp.note || '-', 'wrap'], [when(rsvp.updated_at)],
   ]);
   tr.append(deleteCell(
@@ -117,6 +120,9 @@ async function load() {
 
   const stats = [
     [data.totals.headcount, 'People coming'],
+    [data.totals.adults, 'Adults'],
+    [data.totals.children, 'Children'],
+    [data.totals.babies, 'Babies'],
     [data.totals.households, 'Said yes'],
     [data.totals.declined, 'Said no'],
     [data.totals.responses, 'Responses'],
@@ -141,7 +147,7 @@ async function load() {
   $('comments-pending').replaceChildren(...(waiting.length ? waiting.map(commentCard) : [el('p', 'empty', 'No comments waiting.')]));
   $('comments-approved').replaceChildren(...(shown.length ? shown.map(commentCard) : [el('p', 'empty', 'No approved comments yet.')]));
 
-  $('rsvps').replaceChildren(...(data.rsvps.length ? data.rsvps.map(rsvpRow) : [emptyRow(8, 'No RSVPs yet.')]));
+  $('rsvps').replaceChildren(...(data.rsvps.length ? data.rsvps.map(rsvpRow) : [emptyRow(11, 'No RSVPs yet.')]));
 
   $('contacts').replaceChildren(...(data.contacts.length ? data.contacts.map(contactRow) : [emptyRow(5, 'No messages yet.')]));
 }

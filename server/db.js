@@ -11,14 +11,17 @@ const db = new DatabaseSync(config.dbPath);
 db.exec('PRAGMA journal_mode = WAL; PRAGMA foreign_keys = ON; PRAGMA busy_timeout = 5000;');
 db.exec(`
   -- One row per guest (household). "contact" is the normalized phone or email
-  -- and is what a returning guest signs in with.
+  -- and is what a returning guest signs in with. adults, children and babies
+  -- count everyone coming, the guest included (all 0 if they can't make it).
   CREATE TABLE IF NOT EXISTS rsvps (
     id          INTEGER PRIMARY KEY AUTOINCREMENT,
     name        TEXT    NOT NULL,
     contact     TEXT    NOT NULL UNIQUE,
     contact_raw TEXT    NOT NULL,
     attending   INTEGER NOT NULL,
-    guests      INTEGER NOT NULL DEFAULT 0,
+    adults      INTEGER NOT NULL DEFAULT 0,
+    children    INTEGER NOT NULL DEFAULT 0,
+    babies      INTEGER NOT NULL DEFAULT 0,
     dietary     TEXT    NOT NULL DEFAULT '',
     note        TEXT    NOT NULL DEFAULT '',
     created_at  TEXT    NOT NULL,
@@ -95,6 +98,21 @@ db.exec(`
   );
   DELETE FROM attempts;
 `);
+
+// RSVPs sent before adults/children/babies existed stored one "guests" number:
+// how many were coming besides the guest. Add the new columns and count those
+// RSVPs as all adults. The old column is left in place so nothing is lost.
+const rsvpColumns = db.prepare('PRAGMA table_info(rsvps)').all().map((column) => column.name);
+if (!rsvpColumns.includes('adults')) {
+  db.exec(`
+    BEGIN;
+    ALTER TABLE rsvps ADD COLUMN adults   INTEGER NOT NULL DEFAULT 0;
+    ALTER TABLE rsvps ADD COLUMN children INTEGER NOT NULL DEFAULT 0;
+    ALTER TABLE rsvps ADD COLUMN babies   INTEGER NOT NULL DEFAULT 0;
+    UPDATE rsvps SET adults = 1 + guests WHERE attending = 1;
+    COMMIT;
+  `);
+}
 
 /** First matching row, or undefined. */
 export const get = (sql, ...params) => db.prepare(sql).get(...params);

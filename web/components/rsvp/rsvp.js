@@ -10,13 +10,13 @@ export function initRsvp() {
   const done = document.getElementById('rsvp-done');
   const doneTitle = document.getElementById('rsvp-done-title');
   const doneText = document.getElementById('rsvp-done-text');
-  const guestsField = document.getElementById('rsvp-guests-field');
+  const partyField = document.getElementById('rsvp-party-field');
   const dietaryField = document.getElementById('rsvp-dietary-field');
 
   // "How many are coming" and "dietary needs" only matter if the guest is coming.
   const syncAttendingFields = () => {
     const coming = form.elements.attending.value !== 'no';
-    guestsField.hidden = !coming;
+    partyField.hidden = !coming;
     dietaryField.hidden = !coming;
   };
   form.addEventListener('change', syncAttendingFields);
@@ -51,7 +51,9 @@ export function initRsvp() {
       name: data.get('name'),
       contact: data.get('contact'),
       attending: coming,
-      guests: coming ? Number(data.get('guests')) : 0,
+      adults: coming ? Number(data.get('adults')) : 0,
+      children: coming ? Number(data.get('children')) : 0,
+      babies: coming ? Number(data.get('babies')) : 0,
       dietary: coming ? data.get('dietary') : '',
       note: data.get('note'),
       website: data.get('website'), // honeypot; real guests never fill this in

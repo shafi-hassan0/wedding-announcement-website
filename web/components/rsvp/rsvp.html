@@ -39,22 +39,32 @@
           <label class="choice-option"><input type="radio" name="attending" value="yes" required><span>Wouldn’t miss it</span></label>
           <label class="choice-option"><input type="radio" name="attending" value="no"><span>Sadly can’t make it</span></label>
         </fieldset>
-        <div class="field" id="rsvp-guests-field">
-          <label for="rsvp-guests">How many are coming with you? <span class="soft">(kids count!)</span></label>
-          <select id="rsvp-guests" name="guests">
-            <option value="0">Just me</option>
-            <option value="1">1 more</option>
-            <option value="2">2 more</option>
-            <option value="3">3 more</option>
-            <option value="4">4 more</option>
-            <option value="5">5 more</option>
-            <option value="6">6 more</option>
-            <option value="7">7 more</option>
-            <option value="8">8 more</option>
-            <option value="9">9 more</option>
-            <option value="10">10 more</option>
-          </select>
-        </div>
+        <fieldset class="field party" id="rsvp-party-field">
+          <legend>How many are coming? <span class="soft">(including you)</span></legend>
+          <div class="party-counts">
+            <div class="party-count">
+              <label for="rsvp-adults">Adults</label>
+              <select id="rsvp-adults" name="adults">
+                <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+                <option>6</option><option>7</option><option>8</option><option>9</option><option>10</option>
+              </select>
+            </div>
+            <div class="party-count">
+              <label for="rsvp-children">Children</label>
+              <select id="rsvp-children" name="children">
+                <option>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+                <option>6</option><option>7</option><option>8</option><option>9</option><option>10</option>
+              </select>
+            </div>
+            <div class="party-count">
+              <label for="rsvp-babies">Babies</label>
+              <select id="rsvp-babies" name="babies">
+                <option>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+                <option>6</option><option>7</option><option>8</option><option>9</option><option>10</option>
+              </select>
+            </div>
+          </div>
+        </fieldset>
         <div class="field" id="rsvp-dietary-field">
           <label for="rsvp-dietary">Dietary needs or allergies <span class="soft">(optional)</span></label>
           <input id="rsvp-dietary" name="dietary" type="text" maxlength="300">

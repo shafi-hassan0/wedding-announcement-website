@@ -36,32 +36,37 @@ export async function submitRsvp(req) {
   }
   const attending = body.attending ? 1 : 0;
 
-  let guests = Number.parseInt(body.guests, 10);
-  if (!Number.isFinite(guests) || guests < 0) guests = 0;
-  if (guests > 20) throw new HttpError(400, 'That is a big group! Please contact Shafi or Phoenix directly.', 'guests');
-  if (!attending) guests = 0;
+  // Everyone coming, the guest included. At least one adult (the guest) if they're coming.
+  const count = (value) => Math.max(0, Number.parseInt(value, 10) || 0);
+  const adults = attending ? Math.max(1, count(body.adults)) : 0;
+  const children = attending ? count(body.children) : 0;
+  const babies = attending ? count(body.babies) : 0;
+  const total = adults + children + babies;
+  if (total > 20) throw new HttpError(400, 'That is a big group! Please contact Shafi or Phoenix directly.', 'adults');
 
   const dietary = text(body.dietary, 300);
   const note = text(body.note, 500);
   const now = new Date().toISOString();
 
   const row = get(
-    `INSERT INTO rsvps (name, contact, contact_raw, attending, guests, dietary, note, created_at, updated_at)
-     VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?8)
+    `INSERT INTO rsvps (name, contact, contact_raw, attending, adults, children, babies, dietary, note, created_at, updated_at)
+     VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?10)
      ON CONFLICT(contact) DO UPDATE SET
        name = excluded.name, contact_raw = excluded.contact_raw, attending = excluded.attending,
-       guests = excluded.guests, dietary = excluded.dietary, note = excluded.note, updated_at = excluded.updated_at
+       adults = excluded.adults, children = excluded.children, babies = excluded.babies,
+       dietary = excluded.dietary, note = excluded.note, updated_at = excluded.updated_at
      RETURNING id, name, attending, created_at, updated_at`,
-    name, contactKey, contactRaw, attending, guests, dietary, note, now
+    name, contactKey, contactRaw, attending, adults, children, babies, dietary, note, now
   );
 
   const isUpdate = row.created_at !== row.updated_at;
-  const summary = attending ? `coming (${1 + guests} total)` : 'cannot make it';
+  const party = partyText(adults, children, babies);
+  const summary = attending ? `coming (${party})` : 'cannot make it';
   const lines = [
     `Name: ${name}`,
     `Contact: ${contactRaw}`,
     `Attending: ${attending ? 'Yes' : 'No'}`,
-    attending ? `Coming with them: ${guests} (total ${1 + guests})` : null,
+    attending ? `Coming: ${party} (total ${total})` : null,
     dietary ? `Dietary needs: ${dietary}` : null,
     note ? `Note: ${note}` : null,
     '',
@@ -74,6 +79,13 @@ export async function submitRsvp(req) {
   return json({ ok: true, guest: publicGuest(row) }, 200, {
     'set-cookie': sessionCookie(req, config.guestCookie, row.id, config.guestSessionSeconds),
   });
+}
+
+/** "2 adults, 1 child, 1 baby": the counts that aren't zero. */
+function partyText(adults, children, babies) {
+  const part = (n, one, many) => (n ? `${n} ${n === 1 ? one : many}` : null);
+  return [part(adults, 'adult', 'adults'), part(children, 'child', 'children'), part(babies, 'baby', 'babies')]
+    .filter(Boolean).join(', ');
 }
 
 /** POST /api/signin — a returning guest on a new device: invite code plus the phone or email they RSVP'd with. */

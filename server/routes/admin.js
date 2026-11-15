@@ -28,7 +28,8 @@ export function adminLogout(req) {
 /** GET /api/admin/data — everything the admin page shows, with headcount totals. */
 export function adminData(req) {
   requireAdmin(req);
-  const rsvps = all('SELECT id, name, contact_raw, attending, guests, dietary, note, updated_at FROM rsvps ORDER BY updated_at DESC');
+  const rsvps = all(`SELECT id, name, contact_raw, attending, adults, children, babies, dietary, note, updated_at
+    FROM rsvps ORDER BY updated_at DESC`);
   const notes = all('SELECT id, name, message, status, created_at FROM notes ORDER BY status DESC, created_at DESC');
   const contacts = all('SELECT id, name, reply_to, message, created_at FROM contacts ORDER BY created_at DESC');
   const posts = all('SELECT id, title, body, created_at, updated_at FROM posts ORDER BY created_at DESC');
@@ -36,11 +37,18 @@ export function adminData(req) {
     FROM comments c JOIN posts p ON p.id = c.post_id ORDER BY c.status DESC, c.created_at DESC`);
 
   const coming = rsvps.filter((r) => r.attending);
+  const sum = (key) => coming.reduce((total, r) => total + r[key], 0);
+  const adults = sum('adults');
+  const children = sum('children');
+  const babies = sum('babies');
   return json({
     totals: {
       responses: rsvps.length,
       households: coming.length,
-      headcount: coming.reduce((sum, r) => sum + 1 + r.guests, 0),
+      headcount: adults + children + babies,
+      adults,
+      children,
+      babies,
       declined: rsvps.length - coming.length,
       pendingNotes: notes.filter((n) => n.status === 'pending').length,
       pendingComments: comments.filter((c) => c.status === 'pending').length,
