@@ -31,6 +31,22 @@
 .hero-when { margin: 0 0 1.8rem; color: var(--muted); font-size: 1rem; }
 .hero-when strong { display: block; color: var(--ink); font-weight: 500; font-size: 1.15rem; letter-spacing: 0.03em; }
 .hero-when > span { display: block; }
+/* Countdown: four numbers in a soft pill, with thin gold lines between them. */
+.countdown { margin: -0.6rem 0 1.8rem; }
+.countdown-units {
+  display: inline-flex; justify-content: center;
+  padding: 12px 6px; border: 1px solid var(--rose-soft); border-radius: 16px;
+  background: rgba(255, 255, 255, 0.7);
+}
+.countdown-unit { margin: 0; padding: 0 clamp(10px, 2.6vw, 18px); min-width: 4.4rem; }
+.countdown-unit + .countdown-unit { border-left: 1px solid rgba(183, 138, 102, 0.45); }
+.countdown-value {
+  display: block; font-family: var(--serif); font-size: clamp(1.9rem, 6vw, 2.5rem); line-height: 1.05;
+  color: var(--rose); font-variant-numeric: lining-nums tabular-nums;
+}
+.countdown-label { display: block; margin-top: 0.3rem; font-size: 0.66rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); }
+.countdown-caption { margin: 0.6rem 0 0; font-family: var(--serif); font-style: italic; font-size: 1.15rem; color: var(--muted); }
+.countdown-now { margin: 0; font-family: var(--serif); font-style: italic; font-size: clamp(1.4rem, 4vw, 1.7rem); color: var(--rose); }
 @media (min-width: 860px) {
   .hero-grid { grid-template-columns: 1.1fr 0.9fr; }
   .hero-photo { order: 0; width: min(100%, 440px); }

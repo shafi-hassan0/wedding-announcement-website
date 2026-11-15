@@ -59,6 +59,8 @@ body {
   background: #fffdfb; border: 1.5px solid #d9c3bb; border-radius: 10px;
 }
 .field input[readonly] { background: #f6efea; color: var(--muted); }
+.field.check label { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+.field.check input { width: 18px; height: 18px; min-height: 0; padding: 0; flex: none; accent-color: var(--rose); }
 .field input:focus, .field select:focus {
   outline: none; border-color: var(--rose); box-shadow: 0 0 0 4px rgba(156, 70, 88, 0.16);
 }

@@ -60,6 +60,11 @@
         </select>
       </div>
 
+      <div class="field check">
+        <label><input type="checkbox" id="backs" checked> Photo album QR codes on the back</label>
+        <p class="help">Adds a back to every invitation with the iPhone and Android photo album codes, so the PDF alternates fronts and backs for double-sided printing.</p>
+      </div>
+
       <div class="field">
         <label for="label-stock">Label sheets</label>
         <select id="label-stock">
@@ -163,6 +168,41 @@
             <p class="invite-code"></p>
           </div>
         </div>
+      </div>
+    </article>
+  </template>
+
+  <!-- The back of every invitation: the shared photo albums. The same for every guest.
+       The QR codes are the website's own (web/static/qr/), made with scripts/qr.js. -->
+  <template id="card-back-template">
+    <article class="card card-back">
+      <div class="card-frame">
+        <p class="eyebrow">Share your photos</p>
+        <h2 class="back-title">Took a great picture?</h2>
+        <p class="headline">They want to see it.</p>
+
+        <div class="flourish" aria-hidden="true"><span></span><svg viewBox="0 0 32 32"><path d="M16 28S3 20.2 3 11.4C3 7.3 6.2 4 10.2 4c2.4 0 4.5 1.2 5.8 3 1.3-1.8 3.4-3 5.8-3C25.8 4 29 7.3 29 11.4 29 20.2 16 28 16 28z"/></svg><span></span></div>
+
+        <p class="back-line">Add your photos and videos from the party to the shared album that matches your phone.</p>
+
+        <div class="back-albums">
+          <figure class="back-album">
+            <img class="qr" src="/qr/iphone-album.svg" alt="QR code that opens the iPhone photo album">
+            <figcaption>
+              <span class="album-device">iPhone</span>
+              <span class="album-service">iCloud Shared Album</span>
+            </figcaption>
+          </figure>
+          <figure class="back-album">
+            <img class="qr" src="/qr/google-photos-album.svg" alt="QR code that opens the Android and Samsung photo album">
+            <figcaption>
+              <span class="album-device">Android &amp; Samsung</span>
+              <span class="album-service">Google Photos</span>
+            </figcaption>
+          </figure>
+        </div>
+
+        <p class="back-note">Point your phone’s camera at the code for your phone. The links are on shaphoenix.com too.</p>
       </div>
     </article>
   </template>

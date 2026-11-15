@@ -1,0 +1,16 @@
+/* Share your photos: one card per album, each with a QR code (for guests on a computer) and a link. */
+
+.albums { display: grid; gap: 24px; max-width: 860px; margin: 0 auto; }
+@media (min-width: 720px) { .albums { grid-template-columns: 1fr 1fr; } }
+.album { display: flex; flex-direction: column; align-items: center; padding: clamp(28px, 4vw, 40px) 24px; text-align: center; }
+.album h3 { font-size: 2rem; color: var(--rose); }
+.album-service { margin: 0.15rem 0 0; font-size: 0.8rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); }
+.album-who { margin: 0.8rem 0 0; }
+.album-qr {
+  width: 180px; height: 180px; margin: 1.3rem auto 0.6rem;
+  border: 1px solid var(--line); border-radius: 12px; background: #fff;
+}
+.album-scan { margin: 0 0 1.4rem; font-size: 0.92rem; color: var(--muted); }
+.album .btn { margin-top: auto; padding: 0 1.6rem; }
+/* Phones: a little smaller, so each button's label stays on one line. */
+@media (max-width: 480px) { .album .btn { padding: 0 1.1rem; font-size: 0.84rem; letter-spacing: 0.12em; } }

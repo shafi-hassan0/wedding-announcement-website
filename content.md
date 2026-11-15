@@ -20,6 +20,10 @@ They said "I do" quietly. Now they'd like to celebrate loudly, with you.
 
 Saturday, March 13, 2027 · 2–6 PM · Echo Lake Park, Glen Allen, Virginia
 
+Countdown: *[days] Days · [hours] Hours · [minutes] Minutes · [seconds] Seconds* — *until the party*
+
+While the party is on (2–6 PM that day): *The party is happening right now!* After 6 PM the countdown is hidden.
+
 Button: **RSVP**
 
 ---
@@ -250,7 +254,24 @@ The shelter is covered, so a few clouds won't stop the party. A little rain neve
 
 ---
 
-## 9. Gifts
+## 9. Share Your Photos
+
+*Share your photos*
+
+**Took a great picture? They want to see it.**
+
+Shafi and Phoenix would love to see the day through your eyes. Add your photos and videos to the shared album that matches your phone, and they'll have every moment to keep.
+
+Two cards, side by side, each with a QR code (for guests reading on a computer) and a button that opens the album:
+
+- **iPhone**: iCloud Shared Album. *For iPhone and iPad.* *On a computer? Scan this with your iPhone's camera.* Button: **Open the iPhone album** (https://photos.icloud.com/shared/album/0d09rIPNUS3VXA9Owx7MXgBdA/)
+- **Android & Samsung**: Google Photos. *For Samsung and other Android phones.* *On a computer? Scan this with your phone's camera.* Button: **Open the Android album** (https://photos.app.goo.gl/kssaNvqvnbnQeDTg6)
+
+The same two QR codes are printed on the back of each invitation.
+
+---
+
+## 10. Gifts
 
 *About gifts...*
 
@@ -262,7 +283,7 @@ But if you absolutely insist and simply cannot be talked out of it, an Amazon gi
 
 ---
 
-## 10. Closing Note
+## 11. Closing Note
 
 *(Photo 6: `web/static/photos/silly-selfie.jpg`: the goofy peace-sign selfie, to end on a laugh.)*
 
@@ -272,7 +293,7 @@ Here's to love, family, and a very good barbecue.
 
 ---
 
-## 11. Contact & Footer
+## 12. Contact & Footer
 
 *Questions? They'd love to hear from you.*
 

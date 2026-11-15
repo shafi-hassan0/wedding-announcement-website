@@ -6,6 +6,7 @@ export const store = {
   returnAddress: { name: '', line1: '', line2: '', city: '', state: '', zip: '' },
   inviteCode: '',
   paper: 'letter', // a key of PAPER in cards.js
+  backs: true, // print the photo album QR codes on the back of every invitation
   labelStock: 'avery5160', // a key of LABEL_STOCK in labels.js
 };
 

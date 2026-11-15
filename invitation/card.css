@@ -70,6 +70,19 @@
 .invite-code { font-weight: 600; font-size: 9.6pt; letter-spacing: 0.05em; color: var(--ink); overflow-wrap: anywhere; }
 .invite-code:empty::before { content: "________________"; color: var(--muted); font-weight: 400; }
 
+/* ---------- the back: the shared photo albums ---------- */
+
+.card-back .card-frame { justify-content: center; padding-top: 0.7in; }
+.back-title { font-family: var(--serif); font-weight: 500; font-size: 24pt; line-height: 1.1; margin-top: 9pt !important; }
+.card-back .headline { margin-top: 3pt !important; }
+.back-line { font-family: var(--serif); font-size: 12pt; line-height: 1.3; max-width: 3.3in; }
+.back-albums { display: flex; justify-content: center; gap: 0.32in; margin-top: 16pt; }
+.back-album { margin: 0; width: 1.55in; display: flex; flex-direction: column; align-items: center; }
+.back-album .qr { width: 1.45in; height: 1.45in; }
+.album-device { display: block; font-family: var(--serif); font-weight: 600; font-size: 13.5pt; line-height: 1.15; color: var(--rose-dark); margin-top: 7pt; }
+.album-service { display: block; font-size: 6.2pt; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); margin-top: 2pt; }
+.back-note { font-size: 7.6pt; line-height: 1.4; color: var(--muted); max-width: 3.1in; margin-top: 16pt !important; }
+
 /* ---------- layout: one 5 x 7 card per page ---------- */
 
 .cards .sheet { display: contents; }

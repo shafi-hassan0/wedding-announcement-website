@@ -19,6 +19,7 @@ import { onStoreChange, store, storeChanged } from './store.js';
 const PRINT_SETTINGS_KEY = 'invitation-print-settings';
 
 const paperInput = document.getElementById('paper');
+const backsInput = document.getElementById('backs');
 const stockInput = document.getElementById('label-stock');
 const invitationsSummary = document.getElementById('invitations-summary');
 const labelsSummary = document.getElementById('labels-summary');
@@ -31,17 +32,19 @@ function loadPrintSettings() {
     localStorage.removeItem('invitation-settings');
     const saved = JSON.parse(localStorage.getItem(PRINT_SETTINGS_KEY)) || {};
     if (saved.paper in PAPER) store.paper = saved.paper;
+    if (typeof saved.backs === 'boolean') store.backs = saved.backs;
     if (saved.labelStock in LABEL_STOCK) store.labelStock = saved.labelStock;
   } catch {
     // Storage blocked or empty: use the defaults.
   }
   paperInput.value = store.paper;
+  backsInput.checked = store.backs;
   stockInput.value = store.labelStock;
 }
 
 function savePrintSettings() {
   try {
-    localStorage.setItem(PRINT_SETTINGS_KEY, JSON.stringify({ paper: store.paper, labelStock: store.labelStock }));
+    localStorage.setItem(PRINT_SETTINGS_KEY, JSON.stringify({ paper: store.paper, backs: store.backs, labelStock: store.labelStock }));
   } catch {
     // Storage blocked: the page still works, it just will not remember.
   }
@@ -49,7 +52,9 @@ function savePrintSettings() {
 
 function render() {
   const cards = renderCards();
-  invitationsSummary.textContent = `${plural(cards.invitations, 'invitation')} on ${plural(cards.sheets, 'page')}.`;
+  invitationsSummary.textContent = cards.backs
+    ? `${plural(cards.invitations, 'invitation')} on ${plural(cards.sheets, 'page')}, fronts and backs. Print double-sided, flipping on the ${cards.flip} edge.`
+    : `${plural(cards.invitations, 'invitation')} on ${plural(cards.sheets, 'page')}.`;
 
   const labels = renderLabels();
   const parts = [`${plural(labels.returnLabels, 'return label')} and ${plural(labels.deliveryLabels, 'delivery label')}`];
@@ -83,6 +88,11 @@ async function start() {
 
   paperInput.addEventListener('change', () => {
     store.paper = paperInput.value;
+    savePrintSettings();
+    storeChanged();
+  });
+  backsInput.addEventListener('change', () => {
+    store.backs = backsInput.checked;
     savePrintSettings();
     storeChanged();
   });

@@ -4,6 +4,7 @@
 import { initBlog } from './components/blog/blog.js';
 import { initContact } from './components/contact/contact.js';
 import { initGuestbook } from './components/guestbook/guestbook.js';
+import { initCountdown } from './components/hero/countdown.js';
 import { initNav } from './components/nav/nav.js';
 import { initRsvp } from './components/rsvp/rsvp.js';
 import { api } from './shared/api.js';
@@ -16,6 +17,7 @@ initProgressBar();
 initHearts();
 
 initNav();
+initCountdown();
 initRsvp();
 initBlog();
 initGuestbook();

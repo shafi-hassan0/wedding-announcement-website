@@ -13,10 +13,10 @@ web/                    the site guests see
     guestbook/            guestbook.html, guestbook.css, guestbook.js
     blog/                 blog.html, blog.css, blog.js (the Updates section)
     ...                   nav, announcement, story, celebration, food,
-                          good-to-know, gifts, closing, contact, footer
+                          good-to-know, share-photos, gifts, closing, contact, footer
   shared/               styles and logic used by more than one section
   admin/                the admin page's script and styles
-  static/               photos and robots.txt, copied as they are
+  static/               photos, robots.txt and the photo album QR codes (qr/), copied as they are
   main.js               starts each section's logic
 
 server/                 the backend (plain Node, no npm dependencies)
@@ -37,6 +37,7 @@ invitation/             the invitation maker, admin only: guest list, invitation
 
 scripts/build.js        assembles web/ into dist/
 scripts/dev.js          local development: build, watch, run the backend
+scripts/qr.js           makes a QR code SVG (used for the photo album codes)
 
 Dockerfile.api          image for the backend
 Dockerfile.web          image that builds the site and serves it with nginx
@@ -76,12 +77,22 @@ Sign in at `/admin` and choose **Invitations**. The page and the guest list are 
 
 1. **Add guests.** Each guest is a name ("Dear ...") and a mailing address. Only the name is required; a guest without an address gets an invitation but no delivery label. Guests can be edited or removed at any time.
 2. **Set the return address** once. It goes on a return label for every invitation.
-3. **Generate the invitations PDF.** One invitation per guest, each with the site's invite code and a QR code that opens https://shaphoenix.com. Choose letter cardstock (two per sheet, with bleed and cut marks, for a print shop) or 5 × 7 cards (one per page).
+3. **Generate the invitations PDF.** One invitation per guest, each with the site's invite code and a QR code that opens https://shaphoenix.com. Choose letter cardstock (two per sheet, with bleed and cut marks, for a print shop) or 5 × 7 cards (one per page). With **Photo album QR codes on the back** ticked (the default), every invitation gets a back with the iPhone and Android photo album codes, and the PDF alternates fronts and backs: print it double-sided, flipping on the short edge for letter cardstock or the long edge for 5 × 7 cards (the summary under the button says which). Print one sheet first to check the backs come out the right way up.
 4. **Generate the labels PDF.** Return labels first, then delivery labels, each starting on a new sheet, laid out for Avery 5160 (30 per sheet) or Avery 5163 (10 per sheet). Long lines shrink to fit.
 
 Each button opens the print window. Choose "Save as PDF", set margins to "None" and scale to 100%, and turn on "Background graphics" for the invitations. Print a test page of labels on plain paper and hold it against a label sheet before using the real labels.
 
 Guest names and addresses are stored in the site's database (the `invitees` table), never in this repository. The invite code is read from the server's `.env`, so the printed code always matches the one guests must type. To change the invitation's wording, edit the card template in `invitation/index.html`.
+
+### Photo album QR codes
+
+The **Share your photos** section of the site and the backs of the invitations use the same two QR codes, in `web/static/qr/`. If an album link changes, update the link in `web/components/share-photos/share-photos.html` and make a new code:
+
+```bash
+node scripts/qr.js "https://photos.app.goo.gl/..." web/static/qr/google-photos-album.svg "QR code that opens the Android and Samsung photo album"
+```
+
+Scan the new code with a phone before printing anything.
 
 ## How guests use it
 

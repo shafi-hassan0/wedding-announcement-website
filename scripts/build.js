@@ -40,6 +40,7 @@ const STYLES = [
   'components/blog/blog.css',
   'components/guestbook/guestbook.css',
   'components/good-to-know/good-to-know.css',
+  'components/share-photos/share-photos.css',
   'components/gifts/gifts.css',
   'components/closing/closing.css',
   'components/footer/footer.css',

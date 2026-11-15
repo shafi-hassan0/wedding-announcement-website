@@ -34,7 +34,7 @@ export function initNav() {
   });
 
   // Matches the breakpoint in nav.css.
-  window.matchMedia('(min-width: 900px)').addEventListener('change', (event) => {
+  window.matchMedia('(min-width: 1040px)').addEventListener('change', (event) => {
     if (event.matches) setOpen(false);
   });
 }
