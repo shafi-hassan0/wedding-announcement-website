@@ -10,8 +10,8 @@ import { requireAdmin } from '../lib/session.js';
 import { text } from '../lib/validate.js';
 
 const RETURN_ADDRESS_KEY = 'return_address';
-const EMPTY_ADDRESS = { name: '', line1: '', line2: '', city: '', state: '', zip: '' };
-const COLUMNS = 'id, name, line1, line2, city, state, zip';
+const EMPTY_ADDRESS = { name: '', line1: '', line2: '', city: '', state: '', zip: '', country: '' };
+const COLUMNS = 'id, name, line1, line2, city, state, zip, country';
 
 /** Cleans a name-and-address submitted from a form. */
 function readAddress(body) {
@@ -22,6 +22,7 @@ function readAddress(body) {
     city: text(body.city, 60),
     state: text(body.state, 30),
     zip: text(body.zip, 12),
+    country: text(body.country, 60), // empty means the United States
   };
 }
 
@@ -52,9 +53,9 @@ export async function addInvitee(req) {
 
   const now = new Date().toISOString();
   const invitee = get(
-    `INSERT INTO invitees (name, line1, line2, city, state, zip, created_at, updated_at)
-     VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?7) RETURNING ${COLUMNS}`,
-    a.name, a.line1, a.line2, a.city, a.state, a.zip, now
+    `INSERT INTO invitees (name, line1, line2, city, state, zip, country, created_at, updated_at)
+     VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?8) RETURNING ${COLUMNS}`,
+    a.name, a.line1, a.line2, a.city, a.state, a.zip, a.country, now
   );
   return json({ invitee });
 }
@@ -74,9 +75,9 @@ export async function changeInvitee(req, id) {
     const a = readAddress(body);
     if (!a.name) throw new HttpError(400, 'Please enter a name.', 'name');
     const invitee = get(
-      `UPDATE invitees SET name = ?1, line1 = ?2, line2 = ?3, city = ?4, state = ?5, zip = ?6, updated_at = ?7
-       WHERE id = ?8 RETURNING ${COLUMNS}`,
-      a.name, a.line1, a.line2, a.city, a.state, a.zip, new Date().toISOString(), id
+      `UPDATE invitees SET name = ?1, line1 = ?2, line2 = ?3, city = ?4, state = ?5, zip = ?6, country = ?7, updated_at = ?8
+       WHERE id = ?9 RETURNING ${COLUMNS}`,
+      a.name, a.line1, a.line2, a.city, a.state, a.zip, a.country, new Date().toISOString(), id
     );
     if (!invitee) throw new HttpError(404, 'That guest no longer exists.');
     return json({ invitee });

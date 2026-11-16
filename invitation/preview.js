@@ -1,8 +1,13 @@
-// The preview tabs (Invitations / Labels), and printing one of them as its own PDF.
+// The preview tabs (Invitations / Return labels / Delivery labels), and printing one
+// of them as its own PDF.
 
-const VIEWS = ['invitations', 'labels'];
+const panels = {
+  invitations: document.getElementById('cards'),
+  return: document.getElementById('return-labels'),
+  delivery: document.getElementById('delivery-labels'),
+};
+const VIEWS = Object.keys(panels);
 const tabs = Object.fromEntries(VIEWS.map((name) => [name, document.getElementById(`tab-${name}`)]));
-const panels = { invitations: document.getElementById('cards'), labels: document.getElementById('labels') };
 
 let current = 'invitations';
 let onShow = () => {};
@@ -31,7 +36,7 @@ export function initPreview(handler) {
 /* ---------- printing ---------- */
 
 // The printed page size is an @page rule, which a class cannot switch. We add it to
-// page.css and replace it each time, since the two PDFs use different paper.
+// page.css and replace it each time, since the invitations and labels use different paper.
 let pageRuleIndex = null;
 
 function setPageSize(rule) {

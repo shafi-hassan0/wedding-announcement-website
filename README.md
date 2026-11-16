@@ -75,12 +75,12 @@ Local data is kept in `data/wedding.db`. Delete that folder to start fresh.
 
 Sign in at `/admin` and choose **Invitations**. The page and the guest list are only served to a signed-in admin; anyone else is sent to the sign-in page.
 
-1. **Add guests.** Each guest is a name ("Dear ...") and a mailing address. Only the name is required; a guest without an address gets an invitation but no delivery label. Guests can be edited or removed at any time.
+1. **Add guests.** Each guest is a name ("Dear ...") and a mailing address. Only the name is required; a guest without an address gets an invitation but no delivery label. The country starts as United States and is only printed on a label when it is something else (for example `CANADA`, in capitals on the last line, as the post office asks). Guests can be edited or removed at any time.
 2. **Set the return address** once. It goes on a return label for every invitation.
 3. **Generate the invitations PDF.** One invitation per guest, each with the site's invite code and a QR code that opens https://shaphoenix.com. Choose letter cardstock (two per sheet, with bleed and cut marks, for a print shop) or 5 × 7 cards (one per page). With **Photo album QR codes on the back** ticked (the default), every invitation gets a back with the iPhone and Android photo album codes, and the PDF alternates fronts and backs: print it double-sided, flipping on the short edge for letter cardstock or the long edge for 5 × 7 cards (the summary under the button says which). Print one sheet first to check the backs come out the right way up.
-4. **Generate the labels PDF.** Return labels first, then delivery labels, each starting on a new sheet, laid out for Avery 5160 (30 per sheet) or Avery 5163 (10 per sheet). Long lines shrink to fit.
+4. **Generate the return labels PDF and the delivery labels PDF.** Each set has its own button and its own choice of label sheets: Avery 5160 (30 per sheet) or Avery 5163 (10 per sheet). Return labels start on 5160 and delivery labels on 5163. Long lines shrink to fit.
 
-Each button opens the print window. Choose "Save as PDF", set margins to "None" and scale to 100%, and turn on "Background graphics" for the invitations. Print a test page of labels on plain paper and hold it against a label sheet before using the real labels.
+Each button opens the print window for its set only, so the three save as separate PDFs. Choose "Save as PDF", set margins to "None" and scale to 100%, and turn on "Background graphics" for the invitations. Print a test page of labels on plain paper and hold it against a label sheet before using the real labels.
 
 Guest names and addresses are stored in the site's database (the `invitees` table), never in this repository. The invite code is read from the server's `.env`, so the printed code always matches the one guests must type. To change the invitation's wording, edit the card template in `invitation/index.html`.
 

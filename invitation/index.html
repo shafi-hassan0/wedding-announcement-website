@@ -20,7 +20,7 @@
   <aside class="panel">
     <a class="back" href="/admin">← Back to admin</a>
     <h1>Invitations</h1>
-    <p class="panel-intro">Add everyone you are inviting, then generate two PDFs: the invitations, and the envelope labels.</p>
+    <p class="panel-intro">Add everyone you are inviting, then generate three PDFs: the invitations, the return address labels, and the delivery labels.</p>
 
     <section class="group">
       <h2>Guests <span class="tally" id="guest-count"></span></h2>
@@ -52,52 +52,79 @@
     <section class="group">
       <h2>Generate</h2>
 
-      <div class="field">
-        <label for="paper">Invitation paper</label>
-        <select id="paper">
-          <option value="letter">Letter cardstock, two per sheet, with cut marks</option>
-          <option value="card">5 × 7 inch card, one per page</option>
-        </select>
+      <div class="print-set">
+        <h3>Invitations</h3>
+        <div class="field">
+          <label for="paper">Invitation paper</label>
+          <select id="paper">
+            <option value="letter">Letter cardstock, two per sheet, with cut marks</option>
+            <option value="card">5 × 7 inch card, one per page</option>
+          </select>
+        </div>
+
+        <div class="field check">
+          <label><input type="checkbox" id="backs" checked> Photo album QR codes on the back</label>
+          <p class="help">Adds a back to every invitation with the iPhone and Android photo album codes, so the PDF alternates fronts and backs for double-sided printing.</p>
+        </div>
+
+        <div class="field">
+          <label for="code">Invite code</label>
+          <input id="code" type="text" readonly>
+          <p class="help">Taken from the website’s settings and printed on every invitation.</p>
+        </div>
+
+        <button type="button" class="btn" id="print-invitations">Invitations PDF</button>
+        <p class="help" id="invitations-summary"></p>
       </div>
 
-      <div class="field check">
-        <label><input type="checkbox" id="backs" checked> Photo album QR codes on the back</label>
-        <p class="help">Adds a back to every invitation with the iPhone and Android photo album codes, so the PDF alternates fronts and backs for double-sided printing.</p>
+      <!-- Label sheet choices: the measurements for each are in labels.css. -->
+      <div class="print-set">
+        <h3>Return labels</h3>
+        <div class="field">
+          <label for="return-stock">Label sheets</label>
+          <select id="return-stock">
+            <option value="avery5160">Avery 5160: 30 per sheet (1 × 2⅝ in)</option>
+            <option value="avery5163">Avery 5163: 10 per sheet (2 × 4 in)</option>
+          </select>
+        </div>
+        <button type="button" class="btn" id="print-return">Return labels PDF</button>
+        <p class="help" id="return-summary"></p>
       </div>
 
-      <div class="field">
-        <label for="label-stock">Label sheets</label>
-        <select id="label-stock">
-          <option value="avery5160">Avery 5160: 30 per sheet (1 × 2⅝ in)</option>
-          <option value="avery5163">Avery 5163: 10 per sheet (2 × 4 in)</option>
-        </select>
+      <div class="print-set">
+        <h3>Delivery labels</h3>
+        <div class="field">
+          <label for="delivery-stock">Label sheets</label>
+          <select id="delivery-stock">
+            <option value="avery5163">Avery 5163: 10 per sheet (2 × 4 in)</option>
+            <option value="avery5160">Avery 5160: 30 per sheet (1 × 2⅝ in)</option>
+          </select>
+        </div>
+        <button type="button" class="btn" id="print-delivery">Delivery labels PDF</button>
+        <p class="help" id="delivery-summary"></p>
       </div>
 
-      <div class="field">
-        <label for="code">Invite code</label>
-        <input id="code" type="text" readonly>
-        <p class="help">Taken from the website’s settings and printed on every invitation.</p>
-      </div>
-
-      <button type="button" class="btn" id="print-invitations">Invitations PDF</button>
-      <p class="help" id="invitations-summary"></p>
-
-      <button type="button" class="btn" id="print-labels">Labels PDF</button>
-      <p class="help" id="labels-summary"></p>
-
-      <p class="help">Each button opens the print window. Choose “Save as PDF”, set margins to “None” and scale to 100%. For the invitations, also turn on “Background graphics”.</p>
+      <p class="help">Each button opens the print window for that set only, so each saves as its own PDF. Choose “Save as PDF”, set margins to “None” and scale to 100%. For the invitations, also turn on “Background graphics”.</p>
     </section>
   </aside>
 
-  <!-- Preview of both PDFs. Each sheet is drawn at its real printed size. -->
+  <!-- Preview of the three PDFs. Each sheet is drawn at its real printed size. -->
   <main class="preview">
     <div class="tabs" role="tablist" aria-label="Preview">
       <button type="button" class="tab" role="tab" id="tab-invitations" aria-controls="cards" aria-selected="true">Invitations</button>
-      <button type="button" class="tab" role="tab" id="tab-labels" aria-controls="labels" aria-selected="false">Labels</button>
+      <button type="button" class="tab" role="tab" id="tab-return" aria-controls="return-labels" aria-selected="false">Return labels</button>
+      <button type="button" class="tab" role="tab" id="tab-delivery" aria-controls="delivery-labels" aria-selected="false">Delivery labels</button>
     </div>
     <div class="view cards is-active" id="cards" role="tabpanel" aria-labelledby="tab-invitations"></div>
-    <div class="view labels" id="labels" role="tabpanel" aria-labelledby="tab-labels"></div>
+    <div class="view labels" id="return-labels" role="tabpanel" aria-labelledby="tab-return"></div>
+    <div class="view labels" id="delivery-labels" role="tabpanel" aria-labelledby="tab-delivery"></div>
   </main>
+
+  <!-- Suggestions for the country box. Any country can be typed. -->
+  <datalist id="country-choices">
+    <option value="United States">
+    <option value="Canada">
+  </datalist>
 
   <!-- Name and address inputs, used by both the guest form and the return address form. -->
   <template id="address-fields-template">
@@ -124,8 +151,12 @@
       </div>
       <div class="field field-zip">
         <label data-for="zip">ZIP</label>
-        <input data-field="zip" type="text" maxlength="12" autocomplete="off" inputmode="numeric">
+        <input data-field="zip" type="text" maxlength="12" autocomplete="off">
       </div>
+    </div>
+    <div class="field">
+      <label data-for="country">Country <span class="soft">(printed only outside the United States)</span></label>
+      <input data-field="country" type="text" maxlength="60" autocomplete="off" list="country-choices">
     </div>
   </template>
 

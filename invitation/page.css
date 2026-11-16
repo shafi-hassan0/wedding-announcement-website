@@ -83,6 +83,10 @@ body {
 .btn-outline { background: transparent; color: var(--rose); }
 .btn-outline:hover { background: var(--rose); color: #fff; }
 .btn + .help { margin-bottom: 1.1rem; }
+
+/* One set of settings and its PDF button in the Generate section. */
+.print-set + .print-set { margin-top: 1.4rem; padding-top: 1.2rem; border-top: 1px dashed var(--line); }
+.print-set h3 { margin: 0 0 0.8rem; font: 600 0.78rem/1.2 var(--sans); letter-spacing: 0.14em; text-transform: uppercase; color: var(--rose-dark); }
 .button-row { display: flex; gap: 10px; }
 
 /* ---------- guest list ---------- */
@@ -126,7 +130,7 @@ body {
 }
 
 /* ---------- printing ---------- */
-/* Each "PDF" button prints one of the two views. print.js sets data-print on <body>
+/* Each "PDF" button prints one of the three views. preview.js sets data-print on <body>
    to say which, and sets the page size to match (it adds an @page rule to this file). */
 
 @media print {
@@ -134,5 +138,6 @@ body {
   .panel, .tabs, .preview-note { display: none !important; }
   .view { display: none; }
   body[data-print="invitations"] #cards,
-  body[data-print="labels"] #labels { display: block; }
+  body[data-print="return"] #return-labels,
+  body[data-print="delivery"] #delivery-labels { display: block; }
 }

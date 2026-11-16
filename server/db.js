@@ -70,7 +70,7 @@ db.exec(`
   );
 
   -- People to send an invitation to, with their mailing address. Admin only:
-  -- nothing on the public site reads this table.
+  -- nothing on the public site reads this table. An empty country means the United States.
   CREATE TABLE IF NOT EXISTS invitees (
     id         INTEGER PRIMARY KEY AUTOINCREMENT,
     name       TEXT NOT NULL,
@@ -79,6 +79,7 @@ db.exec(`
     city       TEXT NOT NULL DEFAULT '',
     state      TEXT NOT NULL DEFAULT '',
     zip        TEXT NOT NULL DEFAULT '',
+    country    TEXT NOT NULL DEFAULT '',
     created_at TEXT NOT NULL,
     updated_at TEXT NOT NULL
   );
@@ -112,6 +113,13 @@ if (!rsvpColumns.includes('adults')) {
     UPDATE rsvps SET adults = 1 + guests WHERE attending = 1;
     COMMIT;
   `);
+}
+
+// Invitees added before the country field existed are all in the United States,
+// which an empty country already means.
+const inviteeColumns = db.prepare('PRAGMA table_info(invitees)').all().map((column) => column.name);
+if (!inviteeColumns.includes('country')) {
+  db.exec(`ALTER TABLE invitees ADD COLUMN country TEXT NOT NULL DEFAULT ''`);
 }
 
 /** First matching row, or undefined. */

@@ -2,8 +2,8 @@
 // server, then starts each part of the page:
 //
 //   guests.js    the guest list and return address forms
-//   cards.js     the invitations           (card.css)
-//   labels.js    the envelope labels       (labels.css)
+//   cards.js     the invitations                        (card.css)
+//   labels.js    the return and delivery labels         (labels.css)
 //   preview.js   the preview tabs and printing
 //
 // Only a signed-in admin is served this page (see server/routes/invitations.js).
@@ -11,7 +11,7 @@
 import { api } from './api.js';
 import { PAPER, renderCards } from './cards.js';
 import { initGuests } from './guests.js';
-import { LABEL_PAGE, LABEL_STOCK, fitLabels, renderLabels } from './labels.js';
+import { LABEL_PAGE, LABEL_STOCK, fitLabels, isLabelView, renderLabels } from './labels.js';
 import { currentView, initPreview, printView } from './preview.js';
 import { onStoreChange, store, storeChanged } from './store.js';
 
@@ -20,9 +20,11 @@ const PRINT_SETTINGS_KEY = 'invitation-print-settings';
 
 const paperInput = document.getElementById('paper');
 const backsInput = document.getElementById('backs');
-const stockInput = document.getElementById('label-stock');
+const returnStockInput = document.getElementById('return-stock');
+const deliveryStockInput = document.getElementById('delivery-stock');
 const invitationsSummary = document.getElementById('invitations-summary');
-const labelsSummary = document.getElementById('labels-summary');
+const returnSummary = document.getElementById('return-summary');
+const deliverySummary = document.getElementById('delivery-summary');
 
 const plural = (count, word) => `${count} ${word}${count === 1 ? '' : 's'}`;
 
@@ -33,18 +35,24 @@ function loadPrintSettings() {
     const saved = JSON.parse(localStorage.getItem(PRINT_SETTINGS_KEY)) || {};
     if (saved.paper in PAPER) store.paper = saved.paper;
     if (typeof saved.backs === 'boolean') store.backs = saved.backs;
-    if (saved.labelStock in LABEL_STOCK) store.labelStock = saved.labelStock;
+    // Before each set had its own choice, one "labelStock" was used for both. It carries
+    // over to the return labels; the delivery labels start on 10 per sheet.
+    const returnStock = saved.returnStock ?? saved.labelStock;
+    if (returnStock in LABEL_STOCK) store.returnStock = returnStock;
+    if (saved.deliveryStock in LABEL_STOCK) store.deliveryStock = saved.deliveryStock;
   } catch {
     // Storage blocked or empty: use the defaults.
   }
   paperInput.value = store.paper;
   backsInput.checked = store.backs;
-  stockInput.value = store.labelStock;
+  returnStockInput.value = store.returnStock;
+  deliveryStockInput.value = store.deliveryStock;
 }
 
 function savePrintSettings() {
   try {
-    localStorage.setItem(PRINT_SETTINGS_KEY, JSON.stringify({ paper: store.paper, backs: store.backs, labelStock: store.labelStock }));
+    const { paper, backs, returnStock, deliveryStock } = store;
+    localStorage.setItem(PRINT_SETTINGS_KEY, JSON.stringify({ paper, backs, returnStock, deliveryStock }));
   } catch {
     // Storage blocked: the page still works, it just will not remember.
   }
@@ -57,11 +65,19 @@ function render() {
     : `${plural(cards.invitations, 'invitation')} on ${plural(cards.sheets, 'page')}.`;
 
   const labels = renderLabels();
-  const parts = [`${plural(labels.returnLabels, 'return label')} and ${plural(labels.deliveryLabels, 'delivery label')}`];
-  parts.push(`on ${plural(labels.sheets, 'label sheet')}.`);
-  labelsSummary.textContent = parts.join(' ');
+  returnSummary.textContent = `${plural(labels.returnLabels, 'return label')} on ${plural(labels.returnSheets, 'sheet')}.`;
+  deliverySummary.textContent = `${plural(labels.deliveryLabels, 'delivery label')} on ${plural(labels.deliverySheets, 'sheet')}.`;
 
-  if (currentView() === 'labels') fitLabels();
+  if (isLabelView(currentView())) fitLabels(currentView());
+}
+
+/** Keeps a settings input in step with the store, remembers it, and redraws. */
+function bindSetting(input, key, read = () => input.value) {
+  input.addEventListener('change', () => {
+    store[key] = read();
+    savePrintSettings();
+    storeChanged();
+  });
 }
 
 async function start() {
@@ -82,31 +98,23 @@ async function start() {
 
   initGuests();
   initPreview((view) => {
-    if (view === 'labels') fitLabels();
+    if (isLabelView(view)) fitLabels(view);
   });
   onStoreChange(render);
 
-  paperInput.addEventListener('change', () => {
-    store.paper = paperInput.value;
-    savePrintSettings();
-    storeChanged();
-  });
-  backsInput.addEventListener('change', () => {
-    store.backs = backsInput.checked;
-    savePrintSettings();
-    storeChanged();
-  });
-  stockInput.addEventListener('change', () => {
-    store.labelStock = stockInput.value;
-    savePrintSettings();
-    storeChanged();
-  });
+  bindSetting(paperInput, 'paper');
+  bindSetting(backsInput, 'backs', () => backsInput.checked);
+  bindSetting(returnStockInput, 'returnStock');
+  bindSetting(deliveryStockInput, 'deliveryStock');
 
   document.getElementById('print-invitations').addEventListener('click', () => {
     printView('invitations', PAPER[store.paper].page);
   });
-  document.getElementById('print-labels').addEventListener('click', () => {
-    printView('labels', LABEL_PAGE);
+  document.getElementById('print-return').addEventListener('click', () => {
+    printView('return', LABEL_PAGE);
+  });
+  document.getElementById('print-delivery').addEventListener('click', () => {
+    printView('delivery', LABEL_PAGE);
   });
 
   storeChanged();

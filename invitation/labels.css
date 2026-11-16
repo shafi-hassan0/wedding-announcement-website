@@ -1,17 +1,18 @@
 /* Envelope label sheets. Each sheet is a portrait letter page laid out to the label
    maker's measurements, so the text lands inside the peel-off labels. */
 
-/* Measurements for each kind of label sheet. To add another, copy a block and
-   change the numbers (they are printed on the label packet), then add it to LABEL_STOCK
-   in labels.js and to the "Label sheets" choices in index.html. */
-.labels.avery5160 {
+/* Measurements for each kind of label sheet. labels.js puts the chosen one's class on
+   every sheet, so the return and delivery labels can use different sheets. To add another,
+   copy a block and change the numbers (they are printed on the label packet), then add
+   it to LABEL_STOCK in labels.js and to both "Label sheets" choices in index.html. */
+.label-sheet.avery5160 {
   --cols: 3;
   --label-w: 2.625in; --label-h: 1in;
   --margin-top: 0.5in; --margin-side: 0.1875in;
   --col-gap: 0.125in;
   --name-size: 11pt; --line-size: 8.6pt; --label-pad: 0.08in 0.14in;
 }
-.labels.avery5163 {
+.label-sheet.avery5163 {
   --cols: 2;
   --label-w: 4in; --label-h: 2in;
   --margin-top: 0.5in; --margin-side: 0.15625in;
@@ -44,11 +45,8 @@
   .label-sheet { box-shadow: var(--sheet-shadow); }
   /* Faint outlines so the label positions are visible in the preview. They are not printed. */
   .label { outline: 1px dashed #dccfc9; outline-offset: -1px; border-radius: 0.09in; }
-  .sheet-title { flex-basis: 100%; margin: 0; font-family: var(--serif); font-size: 1.5rem; }
-  .sheet-title + .label-sheet { margin-top: -16px; }
 }
 
 @media print {
-  .sheet-title { display: none; }
   .label-sheet { break-after: page; break-inside: avoid; }
 }
